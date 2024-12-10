@@ -1,1 +1,1 @@
-print('zov')
+print('Petr Sotnik pendos proklyatui')
