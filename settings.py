@@ -10,13 +10,6 @@ from Buttons import Settings_Button, Button
 class Settings:
     def __init__(self, window_width, window_height, screen, last_object):
         pygame.init()
-        self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
-        self.background_image = pygame.image.load("resources/background_image.png")
-        self.screen_size = (window_width, window_height)
-        self.background_image = pygame.transform.scale(self.background_image, self.screen_size)
-        self.window.blit(self.background_image, (0, 0))
-
-
         self.clock = pygame.time.Clock()
 
         self.window_width = window_width
@@ -24,7 +17,7 @@ class Settings:
 
         #  код отвечает за изменение яркости
         self.set_brightness(self.get_brightness())
-
+        self.screen_size = (window_width, window_height)
         #  код отвечает за изменение звука
         devices = AudioUtilities.GetSpeakers()
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
@@ -33,11 +26,14 @@ class Settings:
         #  рисуем окно настроек
         # self.window = pygame.display.set_mode((self.window_width, self.window_height))
         # self.screen_size = (1100, 580)
-
+        self.window = pygame.display.set_mode((0, 0), pygame.FULLSCREEN)
+        self.background_image = pygame.image.load("resources/background_image.png")
+        self.background_image = pygame.transform.scale(self.background_image, self.screen_size)
+        self.window.blit(self.background_image, (0, 0))
         pygame.display.set_caption("Настройки")
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
-        self.font = pygame.font.Font("resources/shrift.otf", 25)
+        self.font = pygame.font.Font("resources/shrift.otf", 45)
 
         #  создание надписей
         text_complexity = self.font.render("Изменение уровня сложности", True, self.button_color)
@@ -54,17 +50,17 @@ class Settings:
                                         'resources/after.png',
                                         'resources/btn_on.mp3')
 
-        self.easy_btn = Settings_Button(int(self.screen_size[0] / 15.7), int(self.screen_size[1] / 1.8),
+        self.easy_btn = Settings_Button(int(self.screen_size[0] / 15.7), int(self.screen_size[1] / 1.85),
                                         int(self.screen_size[0] / 3.66), int(self.screen_size[1] / 7.43), 'Щадящий',
                                         'resources/before.png',
                                         'resources/before.png',
                                         'resources/btn_on.mp3')
-        self.veteran_btn = Settings_Button(int(self.screen_size[0] / 2.75), int(self.screen_size[1] / 1.8),
+        self.veteran_btn = Settings_Button(int(self.screen_size[0] / 2.75), int(self.screen_size[1] / 1.85),
                                            int(self.screen_size[0] / 3.66), int(self.screen_size[1] / 7.43), 'Ветеран',
                                            'resources/before.png',
                                            'resources/before.png',
                                            'resources/btn_on.mp3')
-        self.hard_btn = Settings_Button(int(self.screen_size[0] / 1.5), int(self.screen_size[1] / 1.8),
+        self.hard_btn = Settings_Button(int(self.screen_size[0] / 1.5), int(self.screen_size[1] / 1.85),
                                         int(self.screen_size[0] / 3.66), int(self.screen_size[1] / 7.43),
                                         'Ангел Смерти',
                                         'resources/before.png',
@@ -88,30 +84,29 @@ class Settings:
                                    'resources/after.png',
                                    'resources/btn_on.mp3')
 
-        self.brightness_status = Settings_Button(int(self.screen_size[0] / 2.58), int(self.screen_size[1] / 3),
+        self.brightness_status = Settings_Button(int(self.screen_size[0] / 2.58), int(self.screen_size[1] / 3.15),
                                                  int(self.screen_size[0] / 3.6), int(self.screen_size[1] / 10),
                                                  f'{self.get_brightness()}',
                                                  'resources/after1.png',
                                                  'resources/before.png',
                                                  'resources/btn_on.mp3')
-        self.brightness_plus = Button(int(self.screen_size[0] / 1.5), int(self.screen_size[1] / 3.0),
+        self.brightness_plus = Button(int(self.screen_size[0] / 1.5), int(self.screen_size[1] / 3.15),
                                       int(self.screen_size[0] / 7.33), int(self.screen_size[1] / 10), '+',
                                       'resources/before.png',
                                       'resources/after.png',
                                       'resources/btn_on.mp3')
-        self.brightness_minus = Button(int(self.screen_size[0] / 4), int(self.screen_size[1] / 3.0),
+        self.brightness_minus = Button(int(self.screen_size[0] / 4), int(self.screen_size[1] / 3.15),
                                        int(self.screen_size[0] / 7.33), int(self.screen_size[1] / 10), '-',
                                        'resources/before.png',
                                        'resources/after.png',
                                        'resources/btn_on.mp3')
 
-        #
-        self.fps_yes = Button(int(self.screen_size[0] / 2.5), int(self.screen_size[1] / 1.3),
+        self.fps_yes = Button(int(self.screen_size[0] / 2.55), int(self.screen_size[1] / 1.3),
                               int(self.screen_size[0] / 11), int(self.screen_size[1] / 10), 'Да',
                               'resources/before.png',
                               'resources/after1.png',
                               'resources/btn_on.mp3', is_on=False)
-        self.fps_no = Button(int(self.screen_size[0] / 2), int(self.screen_size[1] / 1.3),
+        self.fps_no = Button(int(self.screen_size[0] / 1.9), int(self.screen_size[1] / 1.3),
                              int(self.screen_size[0] / 11), int(self.screen_size[1] / 10), 'Нет',
                              'resources/before.png',
                              'resources/after1.png',
@@ -143,10 +138,10 @@ class Settings:
             self.hard_btn.draw(self.window, temp=1)
 
         # рендер кнопок
-        self.window.blit(text_complexity, (int(self.screen_size[0] / 2.7), int(self.screen_size[1] / 2)))
-        self.window.blit(text_volume, (int(self.screen_size[0] / 2.7), int(self.screen_size[1] / 23.2)))
-        self.window.blit(text_brightness, (int(self.screen_size[0] / 2.7), int(self.screen_size[1] / 3.4)))
-        self.window.blit(text_fps, (int(self.screen_size[0] / 2.4), int(self.screen_size[1] / 1.4)))
+        self.window.blit(text_complexity, (int(self.screen_size[0] / 3.1), int(self.screen_size[1] / 2.1)))
+        self.window.blit(text_volume, (int(self.screen_size[0] / 3.1), int(self.screen_size[1] / 24.9)))
+        self.window.blit(text_brightness, (int(self.screen_size[0] / 3.1), int(self.screen_size[1] / 4.1)))
+        self.window.blit(text_fps, (int(self.screen_size[0] / 2.7), int(self.screen_size[1] / 1.4)))
 
         if self.fps_yes.is_on:
             self.text_show_fps = self.font.render(f"{self.clock.get_fps()}", True, self.button_color)
@@ -242,6 +237,7 @@ class Settings:
                         self.fps_no.draw(self.window)
 
                         pygame.display.flip()
+
                     elif self.fps_no.is_hovered:
 
                         with open("resources/fps_status.txt", mode="w", encoding="utf-8") as fps_file:
@@ -259,6 +255,7 @@ class Settings:
                         self.fps_no.draw(self.window)
 
                         pygame.display.flip()
+
                     elif self.easy_btn.is_hovered:
                         self.set_difficulty("Щадящий")
 
@@ -276,8 +273,6 @@ class Settings:
                         self.hard_btn.draw(self.window)
 
                         pygame.display.flip()
-
-
 
                     elif self.veteran_btn.is_hovered:
                         self.set_difficulty("Ветеран")
@@ -368,7 +363,6 @@ class Settings:
             pygame.display.flip()
 
             self.clock.tick(90)
-            pygame.display.flip()
 
     def back(self):  # возврат
         pygame.display.set_caption("Grom: Essense of Chaos")
