@@ -34,7 +34,7 @@ class Button:
             current_image = self.image
         screen.blit(current_image, self.rect.topleft)
         if temp == 0:
-            font = pygame.font.Font("resources/shrift.otf", 45)
+            font = pygame.font.Font("resources/shrift.otf", 40)
             text_surface = font.render(self.text, True, (255, 205, 234))
             text_rect = text_surface.get_rect(center=self.rect.center)
             screen.blit(text_surface, text_rect)
@@ -88,7 +88,7 @@ class Settings_Button:
             temp = pygame.image.load("resources/before.png")
             current_image = pygame.transform.scale(temp, (self.width, self.height))
         screen.blit(current_image, self.rect.topleft)
-        font = pygame.font.Font("resources/shrift.otf", 45)
+        font = pygame.font.Font("resources/shrift.otf", 40)
         text_surface = font.render(self.text, True, (255, 205, 234))
         text_rect = text_surface.get_rect(center=self.rect.center)
         screen.blit(text_surface, text_rect)
