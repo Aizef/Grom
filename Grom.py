@@ -7,7 +7,7 @@ from _ctypes import POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.api.endpointvolume import IAudioEndpointVolume
 from pycaw.utils import AudioUtilities
-from Buttons import Button
+from Buttons import Button, Settings_Button
 from settings import Settings
 
 class Grom:
@@ -19,7 +19,7 @@ class Grom:
 
         pygame.init()
         pygame.font.init()
-        self.font = pygame.font.Font('resources/shrift.otf', 18)
+        self.font = pygame.font.Font('resources/shrift.otf', 30)
         pygame.mixer.music.load("resources/main_theme.mp3")
         pygame.mixer.music.play(-1)
         self.screen = pygame.display.set_mode((self.width, self.height))
@@ -39,15 +39,15 @@ class Grom:
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
         pygame.display.set_caption("Grom:Essense Of Chaos")
 
-        self.go_to_mission_btn = Button(int(self.width / 4), int(self.height / 3.86), int(self.width / 2), 78, 'Перейти к миссиям',
+        self.go_to_mission_btn = Button(int(self.width / 3.5), int(self.height / 3.86), int(self.width / 2), int(self.height / 7.43), 'Перейти к миссиям',
                                         'resources/after1.png',
                                         'resources/after.png',
                                         'resources/start.mp3')
-        self.go_to_settings_btn = Button(int(self.width / 4), int(self.height / 2.14), int(self.width / 2), 78, 'Настройки',
+        self.go_to_settings_btn = Button(int(self.width / 3.5), int(self.height / 2.14), int(self.width / 2), int(self.height / 7.43), 'Настройки',
                                          'resources/after1.png',
                                          'resources/after.png',
                                          'resources/btn_on.mp3')
-        self.go_to_desktop_btn = Button(int(self.width / 4), int(self.height / 1.48), int(self.width / 2), 78, 'Выйти из игры',
+        self.go_to_desktop_btn = Button(int(self.width / 3.5), int(self.height / 1.48), int(self.width / 2), int(self.height / 7.43), 'Выйти из игры',
                                         'resources/after1.png',
                                         'resources/after.png',
                                         'resources/understood.mp3')
@@ -57,8 +57,6 @@ class Grom:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (255, 205, 234))
         else:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
-
-        self.screen.blit(self.grom_text_show_fps, (0, 0))
 
     def main_menu(self):
         running = True
@@ -83,6 +81,20 @@ class Grom:
                 self.go_to_settings_btn.handle_event(event)
                 self.go_to_desktop_btn.handle_event(event)
 
+            if self.get_fps_result() == "True":
+                self.screen.blit(self.grom_text_show_fps, (0, 0))
+                s_b = Settings_Button(0, 0, int(self.width / 22), int(self.height / 11.6), '', 'resources/fps.png')
+                s_b.draw(self.screen)
+
+                text_show_fps = self.font.render(f"{str(self.grom_clock.get_fps()).split('.')[0]}", True,
+                                                 (255, 205, 234))
+
+                self.screen.blit(text_show_fps, (0, 0))
+            else:
+                s_b = Settings_Button(0, 0, int(self.width / 22), int(self.height / 11.6), '', 'resources/fps.png')
+                s_b.draw(self.screen)
+
+
             self.go_to_mission_btn.check_hover(pygame.mouse.get_pos())
             self.go_to_mission_btn.draw(self.screen)
 
@@ -91,19 +103,13 @@ class Grom:
 
             self.go_to_desktop_btn.check_hover(pygame.mouse.get_pos())
 
-            self.grom_clock.tick(90)
-
-            if self.get_fps_result() == "True":
-                self.grom_text_show_fps = self.font.render(f"{str(self.grom_clock.get_fps()).split('.')[0]}", True, (255, 205, 234))
-            else:
-                self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
             self.go_to_desktop_btn.draw(self.screen)
 
-            self.screen.blit(self.grom_text_show_fps, (0, 0))
             pygame.display.flip()
 
             self.screen.blit(self.background_image, (0, 0))
 
+            self.grom_clock.tick(90)
 
     def get_fps_result(self):
         with open("resources/fps_status.txt", mode="r", encoding="utf-8") as fps_file:
