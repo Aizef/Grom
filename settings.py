@@ -33,7 +33,7 @@ class Settings:
         pygame.display.set_caption("Настройки")
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
-        self.font = pygame.font.Font("resources/shrift.otf", 45)
+        self.font = pygame.font.Font("resources/shrift.otf", 40)
 
         #  создание надписей
         text_complexity = self.font.render("Изменение уровня сложности", True, self.button_color)
