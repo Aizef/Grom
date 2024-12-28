@@ -1,9 +1,5 @@
 import sys
 import pygame
-from comtypes import CLSCTX_ALL
-from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
-from ctypes import cast, POINTER
-import wmi
 from Buttons import Settings_Button, Button
 from first_mission import First_mission
 
@@ -108,7 +104,8 @@ class Missions:
         self.second.draw(self.window)
         self.third.draw(self.window)
         self.back_btn.draw(self.window)
-        self.window.blit(self.grom_text_show_fps, (0, 0))
+        if self.get_fps_result() == "True":
+             self.window.blit(self.grom_text_show_fps, (0, 0))
 
     def back(self):  # возврат
         pygame.display.set_caption("Grom: Essense of Chaos")

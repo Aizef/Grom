@@ -1,7 +1,6 @@
 import codecs
 import sys
 
-import pyautogui
 import pygame
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume

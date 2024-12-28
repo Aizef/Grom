@@ -144,8 +144,8 @@ class First_mission:
         self.action_button.draw(self.window)
         if self.putted_card != None:
             self.putted_card[1].draw(self.window)
-        self.window.blit(self.grom_text_show_fps, (0, 0))
-
+        if self.get_fps_result() == "True":
+             self.window.blit(self.grom_text_show_fps, (0, 0))
         pygame.display.flip()
 
     def bot_turn(self):
