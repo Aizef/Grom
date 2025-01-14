@@ -7,7 +7,7 @@ from pygame import FULLSCREEN
 import time
 
 from buttons import Button
-from character import Character
+from Character import Character
 from Statistic import Statistic_window
 from enemy import Enemy
 

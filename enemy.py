@@ -3,7 +3,7 @@ import random
 
 
 from buttons import Button
-from character import Character
+from Character import Character
 
 
 class Enemy:

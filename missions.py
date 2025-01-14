@@ -3,7 +3,7 @@ import pygame
 from pygame import FULLSCREEN
 
 from buttons import Settings_Button, Button
-from first_mis import First_mission
+from first_mission import First_mission
 
 
 class Missions:
