@@ -1,4 +1,3 @@
-import ctypes
 import sys
 from ctypes import cast
 
@@ -7,7 +6,9 @@ from _ctypes import POINTER
 from comtypes import CLSCTX_ALL
 from pycaw.api.endpointvolume import IAudioEndpointVolume
 from pycaw.utils import AudioUtilities
-from Buttons import Button
+from pygame import FULLSCREEN
+
+from buttons import Button
 from missions import Missions
 from settings import Settings
 
@@ -20,8 +21,11 @@ class Grom:
         pygame.mixer.music.play(-1)
         self.width = width
         self.height = height
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        self.background_image = pygame.image.load("resources/pictures/background_image.png")
+        if open('resources/settings/fullscreen_status.txt').read().strip() == 'True':
+            self.screen = pygame.display.set_mode((0,0), FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode((self.width, self.height))
+        self.background_image = pygame.image.load("resources/pictures/missions_pic.png")
         self.icon_image = pygame.image.load("resources/pictures/icon.png")
         pygame.display.set_icon(self.icon_image)
         self.grom_clock = pygame.time.Clock()
@@ -37,15 +41,15 @@ class Grom:
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
         pygame.display.set_caption("Grom:Essense Of Chaos")
 
-        self.go_to_mission_btn = Button(int(self.width / 4), int(self.height / 3.86), int(self.width / 2), 78, 'Перейти к миссиям',
+        self.go_to_mission_btn = Button(int(self.width / 4), int(self.height / 3.86), int(self.width / 2), self.width // 12, 'Перейти к миссиям',
                                         'resources/pictures/after1.png',
                                         'resources/pictures/after.png',
                                         'resources/sound/start.mp3')
-        self.go_to_settings_btn = Button(int(self.width / 4), int(self.height / 2.14), int(self.width / 2), 78, 'Настройки',
+        self.go_to_settings_btn = Button(int(self.width / 4), int(self.height / 2.14), int(self.width / 2), self.width // 12, 'Настройки',
                                          'resources/pictures/after1.png',
                                          'resources/pictures/after.png',
                                          'resources/sound/btn_on.mp3')
-        self.go_to_desktop_btn = Button(int(self.width / 4), int(self.height / 1.48), int(self.width / 2), 78, 'Выйти из игры',
+        self.go_to_desktop_btn = Button(int(self.width / 4), int(self.height / 1.48), int(self.width / 2), self.width // 12, 'Выйти из игры',
                                         'resources/pictures/after1.png',
                                         'resources/pictures/after.png',
                                         'resources/sound/understood.mp3')
@@ -60,25 +64,25 @@ class Grom:
 
     def reopen(self, a, s):
         self.width, self.height = a, s
-        self.screen = pygame.display.set_mode((self.width, self.height))
-        self.background_image = pygame.image.load("resources/pictures/background_image.png")
+        if open('resources/settings/fullscreen_status.txt').read().strip() == 'True':
+            self.screen = pygame.display.set_mode((0, 0), FULLSCREEN)
+        else:
+            self.screen = pygame.display.set_mode((self.width, self.height))
+        self.background_image = pygame.image.load("resources/pictures/missions_pic.png")
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
-        self.go_to_mission_btn = Button(int(self.width / 4), int(self.height / 3.86), int(self.width / 2), 78, 'Перейти к миссиям',
+        self.go_to_mission_btn = Button(int(self.width / 4), int(self.height / 3.86), int(self.width / 2), self.width // 12, 'Перейти к миссиям',
                                         'resources/pictures/after1.png',
                                         'resources/pictures/after.png',
                                         'resources/sound/start.mp3')
-        self.go_to_settings_btn = Button(int(self.width / 4), int(self.height / 2.14), int(self.width / 2), 78, 'Настройки',
+        self.go_to_settings_btn = Button(int(self.width / 4), int(self.height / 2.14), int(self.width / 2), self.width // 12, 'Настройки',
                                          'resources/pictures/after1.png',
                                          'resources/pictures/after.png',
                                          'resources/sound/btn_on.mp3')
-        self.go_to_desktop_btn = Button(int(self.width / 4), int(self.height / 1.48), int(self.width / 2), 78, 'Выйти из игры',
+        self.go_to_desktop_btn = Button(int(self.width / 4), int(self.height / 1.48), int(self.width / 2), self.width // 12, 'Выйти из игры',
                                         'resources/pictures/after1.png',
                                         'resources/pictures/after.png',
                                         'resources/sound/understood.mp3')
         self.main_menu()
-
-
-
 
     def main_menu(self):
         running = True

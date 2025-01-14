@@ -5,10 +5,12 @@ import pygame
 from comtypes import CLSCTX_ALL
 from pycaw.pycaw import AudioUtilities, IAudioEndpointVolume
 from ctypes import cast, POINTER
-import wmi
-from Buttons import Settings_Button, Button
+
+from pygame import FULLSCREEN
+
+from buttons import Settings_Button, Button
 import ctypes
-import screen_brightness_control as sbc
+
 
 
 class Settings:
@@ -17,18 +19,12 @@ class Settings:
         self.clock = pygame.time.Clock()
         self.is_veri = False
         self.temp_volume = int(self.get_volume())
-        self.temp_brightness = int(str(sbc.get_brightness())[1:-1])
-        self.set_brightness(self.temp_brightness)
+        self.temp_fullscren = True
         self.temp_dif = self.get_difficulty()
         self.temp_fps = open('resources/settings/fps_status.txt').read().strip()
 
-        print(self.temp_brightness, file=open('resources/settings/brightness_level.txt', 'w'))
-
         self.window_width = window_width
         self.window_height = window_height
-
-        #  код отвечает за изменение яркости
-        self.set_brightness(self.get_brightness())
 
         #  код отвечает за изменение звука
         devices = AudioUtilities.GetSpeakers()
@@ -45,17 +41,15 @@ class Settings:
         self.max_widht = user32.GetSystemMetrics(0)
         self.max_height = user32.GetSystemMetrics(1)
         self.temp_screen = len(self.screen_list) - 1
-        self.screen_list.pop()
-        self.screen_list.append('Полноэкранный режим')
-
         self.set_screen(self.temp_screen)
-        self.setting = [self.temp_screen, self.temp_volume, self.temp_brightness, self.get_difficulty(),
+
+        self.setting = [self.temp_screen, self.temp_volume, self.temp_fullscren, self.get_difficulty(),
                         open('resources/settings/fps_status.txt').read().strip()]
         self.screen_size = (self.window_width,
                             self.window_height)
-        self.window = pygame.display.set_mode(self.screen_size)
+        self.window = pygame.display.set_mode(self.screen_size, self.temp_fullscren)
 
-        self.background_image = pygame.image.load("resources/pictures/background_image.png")
+        self.background_image = pygame.image.load("resources/pictures/set_final.png")
         self.background_image = pygame.transform.scale(self.background_image, self.screen_size)
         self.window.blit(self.background_image, (0, 0))
         pygame.display.set_caption("Настройки")
@@ -67,7 +61,7 @@ class Settings:
         self.text_complexity = self.font.render("Изменение уровня сложности", True, self.button_color)
         self.text_volume = self.font.render("Изменение уровня громкости", True, self.button_color)
         self.text_fps = self.font.render("Отображать FPS?", True, self.button_color)
-        self.text_brightness = self.font.render("Изменение уровня яркости", True, self.button_color)
+        self.text_brightness = self.font.render("Полноэкранный режим", True, self.button_color)
         self.text_screen = self.font.render("Изменение разрешения экрана", True, self.button_color)
         self.text_show_fps = self.font.render(f"", True, self.button_color)
         # рендер кнопок
@@ -81,7 +75,6 @@ class Settings:
 
     def open(self):
         running = True
-        print(6)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -105,22 +98,8 @@ class Settings:
                         pygame.display.flip()
 
                     elif self.verify.is_hovered:
-                        self.insert_settings(self.temp_volume, self.temp_brightness, self.temp_screen)
+                        self.insert_settings()
                         running = False
-
-                    elif self.brightness_minus.is_hovered:
-                        if self.temp_brightness > 0:
-                            self.temp_brightness -= 10
-                            self.brightness_status.text = str(self.temp_brightness)
-                            self.brightness_status.draw(self.window)
-                            pygame.display.flip()
-
-                    elif self.brightness_plus.is_hovered:
-                        if self.temp_brightness <= 90:
-                            self.temp_brightness += 10
-                            self.brightness_status.text = str(self.temp_brightness)
-                            self.brightness_status.draw(self.window)
-                            pygame.display.flip()
 
                     elif self.volume_plus.is_hovered:
                         if float(self.temp_volume) <= 90:
@@ -139,6 +118,12 @@ class Settings:
                             self.volume_plus.draw(self.window, temp=10)
                             self.volume_minus.draw(self.window, temp=10)
                             pygame.display.flip()
+
+                    elif self.fullscreen_no.is_hovered:
+                        self.temp_fullscren = False
+
+                    elif self.fullscreen_yes.is_hovered:
+                        self.temp_fullscren = True
 
                     elif self.fps_yes.is_hovered:
                         self.temp_fps = 'True'
@@ -219,8 +204,8 @@ class Settings:
                 self.volume_plus.handle_event(event)
                 self.volume_minus.handle_event(event)
 
-                self.brightness_plus.handle_event(event)
-                self.brightness_minus.handle_event(event)
+                self.fullscreen_yes.handle_event(event)
+                self.fullscreen_no.handle_event(event)
 
                 self.screen_plus.handle_event(event)
                 self.screen_minus.handle_event(event)
@@ -249,8 +234,8 @@ class Settings:
             self.volume_plus.check_hover(pygame.mouse.get_pos())
             self.volume_minus.check_hover(pygame.mouse.get_pos())
 
-            self.brightness_plus.check_hover(pygame.mouse.get_pos())
-            self.brightness_minus.check_hover(pygame.mouse.get_pos())
+            self.fullscreen_yes.check_hover(pygame.mouse.get_pos())
+            self.fullscreen_no.check_hover(pygame.mouse.get_pos())
 
             self.screen_plus.check_hover(pygame.mouse.get_pos())
             self.screen_minus.check_hover(pygame.mouse.get_pos())
@@ -259,7 +244,7 @@ class Settings:
             self.fps_no.check_hover(pygame.mouse.get_pos())
 
             self.back_btn.check_hover(pygame.mouse.get_pos())
-            if self.setting != [self.temp_screen, int(self.temp_volume), self.temp_brightness, self.temp_dif,
+            if self.setting != [self.temp_screen, int(self.temp_volume), self.temp_fullscren, self.temp_dif,
                                 str(self.temp_fps)]:
                 self.is_veri = True
             else:
@@ -311,23 +296,16 @@ class Settings:
                                        'resources/pictures/before.png',
                                        'resources/pictures/after.png',
                                        'resources/sound/btn_on.mp3')
-
-            self.brightness_status = Settings_Button(int(self.screen_size[0] / 2.58), int(self.screen_size[1] / 3.86),
-                                                     int(self.screen_size[0] / 3.6), int(self.screen_size[1] / 10),
-                                                     f'{self.temp_brightness}',
-                                                     'resources/pictures/after1.png',
-                                                     'resources/pictures/before.png',
-                                                     'resources/sound/btn_on.mp3')
-            self.brightness_plus = Button(int(self.screen_size[0] / 1.5), int(self.screen_size[1] / 3.86),
-                                          int(self.screen_size[0] / 7.33), int(self.screen_size[1] / 10), '+',
-                                          'resources/pictures/before.png',
-                                          'resources/pictures/after.png',
-                                          'resources/sound/btn_on.mp3')
-            self.brightness_minus = Button(int(self.screen_size[0] / 4), int(self.screen_size[1] / 3.86),
-                                           int(self.screen_size[0] / 7.33), int(self.screen_size[1] / 10), '-',
-                                           'resources/pictures/before.png',
-                                           'resources/pictures/after.png',
-                                           'resources/sound/btn_on.mp3')
+            self.fullscreen_yes = Settings_Button(int(self.screen_size[0] / 2), int(self.screen_size[1] / 3.86),
+                                         int(self.screen_size[0] / 7.33), int(self.screen_size[1] / 10), 'Да',
+                                         'resources/pictures/before.png',
+                                         'resources/pictures/after.png',
+                                         'resources/sound/btn_on.mp3')
+            self.fullscreen_no = Settings_Button(int(self.screen_size[0] / 2.9), int(self.screen_size[1] / 3.86),
+                                        int(self.screen_size[0] / 7.33), int(self.screen_size[1] / 10), 'Нет',
+                                        'resources/pictures/before.png',
+                                        'resources/pictures/after.png',
+                                        'resources/sound/btn_on.mp3')
             self.screen_status = Settings_Button(int(self.screen_size[0] / 2.58), int(self.screen_size[1] / 2.32),
                                                  int(self.screen_size[0] / 3.6), int(self.screen_size[1] / 10),
                                                  f'{self.screen_list[int(self.temp_screen)]}',
@@ -344,21 +322,21 @@ class Settings:
                                        'resources/pictures/before.png',
                                        'resources/pictures/after.png',
                                        'resources/sound/btn_on.mp3')
-            self.fps_yes = Button(int(self.screen_size[0] / 2.5), int(self.screen_size[1] / 1.234),
-                                  int(self.screen_size[0] / 11), int(self.screen_size[1] / 12), 'Да',
-                                  'resources/pictures/before.png',
-                                  'resources/pictures/after1.png',
-                                  'resources/sound/btn_on.mp3', is_on=False)
-            self.fps_no = Button(int(self.screen_size[0] / 2), int(self.screen_size[1] / 1.234),
-                                 int(self.screen_size[0] / 11), int(self.screen_size[1] / 12), 'Нет',
+            self.fps_yes = Settings_Button(int(self.screen_size[0] / 2.5), int(self.screen_size[1] / 1.234),
+                                           int(self.screen_size[0] / 11), int(self.screen_size[1] / 12), 'Да',
+                                           'resources/pictures/before.png',
+                                           'resources/pictures/before.png',
+                                           'resources/sound/btn_on.mp3')
+            self.fps_no = Settings_Button(int(self.screen_size[0] / 2), int(self.screen_size[1] / 1.234),
+                                          int(self.screen_size[0] / 11), int(self.screen_size[1] / 12), 'Нет',
+                                          'resources/pictures/before.png',
+                                          'resources/pictures/before.png',
+                                          'resources/sound/btn_on.mp3')
+            self.verify = Button(int(self.screen_size[0] / 2.75), int(self.screen_size[1] / 1.11),
+                                 int(self.screen_size[0] / 3.6), int(self.screen_size[1] / 12), 'Подтвердить',
                                  'resources/pictures/before.png',
                                  'resources/pictures/after1.png',
                                  'resources/sound/btn_on.mp3', is_on=True)
-            self.verify = Button(int(self.screen_size[0] / 2.75), int(self.screen_size[1] / 1.11),
-                                     int(self.screen_size[0] / 3.6), int(self.screen_size[1] / 12), 'Подтвердить',
-                                     'resources/pictures/before.png',
-                                     'resources/pictures/after1.png',
-                                     'resources/sound/btn_on.mp3', is_on=True)
         if self.setting[-1] == 'True':
             s_b = Settings_Button(0, 0, int(self.screen_size[0] / 22), int(self.screen_size[1] / 11.6), '',
                                   'resources/pictures/fps.png')
@@ -385,20 +363,31 @@ class Settings:
         if self.is_veri:
             self.verify.check_hover(pygame.mouse.get_pos())
             self.verify.draw(self.window, temp=0)
+
         self.volume_plus.draw(self.window, temp=10)
         self.volume_minus.draw(self.window, temp=10)
         self.volume_status.draw(self.window)
+
+        self.fullscreen_yes.draw(self.window)
+        self.fullscreen_no.draw(self.window)
 
         self.screen_status.draw(self.window)
         self.screen_plus.draw(self.window, temp=10)
         self.screen_minus.draw(self.window, temp=10)
 
-        self.brightness_plus.draw(self.window, temp=10)
-        self.brightness_minus.draw(self.window, temp=10)
-        self.brightness_status.draw(self.window)
+        if self.temp_fps == 'True':
+            self.fps_yes.draw(self.window, temp=1)
+            self.fps_no.draw(self.window, temp=-1)
+        else:
+            self.fps_yes.draw(self.window, temp=-1)
+            self.fps_no.draw(self.window, temp=1)
 
-        self.fps_yes.draw(self.window)
-        self.fps_no.draw(self.window)
+        if self.temp_fullscren:
+            self.fullscreen_yes.draw(self.window, temp=1)
+            self.fullscreen_no.draw(self.window, temp=-1)
+        else:
+            self.fullscreen_yes.draw(self.window, temp=-1)
+            self.fullscreen_no.draw(self.window, temp=1)
 
         self.window.blit(self.text_complexity, (int(self.screen_size[0] / 2.85), int(self.screen_size[1] / 1.8)))
         self.window.blit(self.text_volume, (int(self.screen_size[0] / 2.85), int(self.screen_size[1] / 23.2)))
@@ -408,11 +397,11 @@ class Settings:
         self.previous_screen.blit(self.window, (0, 0))
         self.back_btn.draw(self.window)
 
-
-    def insert_settings(self, volume, brightness, size):
-        self.set_volume(volume)
-        self.set_brightness(brightness)
+    def insert_settings(self):
+        self.set_volume(self.temp_volume)
         self.set_difficulty(self.temp_dif)
+        self.set_fullscreen(self.temp_fullscren)
+        self.set_screen(self.temp_screen)
         print(f'{self.temp_fps}', file=open('resources/settings/fps_status.txt', 'w'))
         if self.temp_fps:
             temp = pygame.image.load("resources/pictures/after1.png")
@@ -429,23 +418,19 @@ class Settings:
             temp = pygame.image.load("resources/pictures/after1.png")
             self.fps_no.hover_image = pygame.transform.scale(temp, (
                 int(self.screen_size[0] / 11), int(self.screen_size[1] / 10)))
-        if size != self.setting[0]:
-            self.set_screen(size)
+        if self.temp_fullscren:
+            self.window = pygame.display.set_mode((0, 0), FULLSCREEN)
+        else:
             self.window = pygame.display.set_mode(self.screen_size)
-            self.background_image = pygame.image.load("resources/pictures/background_image.png")
-            self.background_image = pygame.transform.scale(self.background_image, self.screen_size)
-            self.window.blit(self.background_image, (0, 0))
+        self.background_image = pygame.image.load("resources/pictures/set_final.png")
+        self.background_image = pygame.transform.scale(self.background_image, self.screen_size)
+        self.window.blit(self.background_image, (0, 0))
         self.setting = []
         self.setting.append(self.get_screen())
         self.setting.append(self.get_volume())
-        self.setting.append(self.get_brightness())
+        self.setting.append(self.temp_fullscren)
         self.setting.append(self.get_difficulty())
         self.setting.append(str(self.temp_fps))
-        self.temp_volume = self.get_volume()
-        self.temp_brightness = self.get_brightness()
-        self.temp_screen = self.get_screen()
-        self.temp_dif = self.get_difficulty()
-        self.temp_fps = open('resources/settings/fps_status.txt').read().strip()
         self.is_veri = False
         self.redrawing(True)
         pygame.display.flip()
@@ -476,32 +461,21 @@ class Settings:
         with open("resources/settings/volume_level.txt", mode="r", encoding="utf-8") as volume_file:
             return int(volume_file.readline().strip())
 
-    def set_brightness(self, brightness):
-        self.c = wmi.WMI(namespace='wmi')
-        self.methods = self.c.WmiMonitorBrightnessMethods()[0]
-        self.methods.WmiSetBrightness(str(brightness), 0)
-
-        with open("resources/settings/brightness_level.txt", mode="w", encoding="utf-8") as file:
-            pass
-        with open("resources/settings/brightness_level.txt", mode="w", encoding="utf-8") as file:
-            print(str(brightness), file=file)
-
-    def get_brightness(self):
-        with open("resources/settings/brightness_level.txt", mode="r", encoding="utf-8") as file:
-            return int(file.readline().strip())
-
     def get_screen(self):
         with codecs.open("resources/settings/screen_status.txt") as file1:
             return int(file1.readline().strip())
+
+    def set_fullscreen(self, fullscreen):
+        with open("resources/settings/fullscreen_status.txt", mode="w", encoding="utf-8") as file:
+            pass
+        with open("resources/settings/fullscreen_status.txt", mode="w", encoding="utf-8") as file:
+            print(fullscreen, file=file)
 
     def set_screen(self, new):
         with open("resources/settings/screen_status.txt", mode="w", encoding="utf-8") as file:
             pass
         with open("resources/settings/screen_status.txt", mode="w", encoding="utf-8") as file:
             print(new, file=file)
-        if self.screen_list[int(self.temp_screen)].split()[0] == 'Полноэкранный':
-            self.screen_size = (self.max_widht,
-                                self.max_height)
-        else:
-            self.screen_size = (int(self.screen_list[int(self.get_screen())].split()[0]),
+
+        self.screen_size = (int(self.screen_list[int(self.get_screen())].split()[0]),
                                 int(self.screen_list[int(self.get_screen())].split()[-1]))

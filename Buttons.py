@@ -5,6 +5,7 @@ class Button:
     def __init__(self, x, y, width, height, text, image_path, hover_image_path=None, sound_path=False,
                  is_on=None):
         self.y = y
+        self.x = x
         self.height = height
         self.width = width
         self.text = text
@@ -32,6 +33,7 @@ class Button:
 
         elif temp == -1:
             current_image = self.image
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
         screen.blit(current_image, self.rect.topleft)
         if temp == 0:
             font = pygame.font.Font("resources/other/shrift.otf", 20)
@@ -43,6 +45,7 @@ class Button:
             text_surface = font.render(self.text, True, (255, 205, 234))
             text_rect = text_surface.get_rect(center=self.rect.center)
             screen.blit(text_surface, text_rect)
+
     def check_hover(self, mouse_pos):
         self.is_hovered = self.rect.collidepoint(mouse_pos)
 
@@ -55,7 +58,10 @@ class Button:
     def is_hovered(self):
         mouse_pos = pygame.mouse.get_pos()
         return self.rect.collidepoint(mouse_pos)
-
+    def __repr__(self):
+        return f"X:{self.x}; W:{self.width}; H:{self.height}"
+    def __str__(self):
+        return f"X:{self.x}; W:{self.width}; H:{self.height}"
 
 class Settings_Button:
     def __init__(self, x, y, width, height, text, image_path, hover_image_path=None, sound_path=False,

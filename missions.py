@@ -1,7 +1,9 @@
 import sys
 import pygame
-from Buttons import Settings_Button, Button
-from first_mission import First_mission
+from pygame import FULLSCREEN
+
+from buttons import Settings_Button, Button
+from first_mis import First_mission
 
 
 class Missions:
@@ -11,10 +13,12 @@ class Missions:
 
         self.window_width = window_width
         self.window_height = window_height
-
         #  рисуем окно настроек
-        self.window = pygame.display.set_mode((self.window_width, self.window_height))
-        self.background_image = pygame.image.load("resources/pictures/background_image.png").convert_alpha()
+        if open('resources/settings/fullscreen_status.txt').read().strip() == 'True':
+            self.window = pygame.display.set_mode((0,0), FULLSCREEN)
+        else:
+            self.window = pygame.display.set_mode((self.window_width, self.window_height))
+        self.background_image = pygame.image.load("resources/pictures/mis_final.png").convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (self.window_width, self.window_height))
         self.window.blit(self.background_image, (0, 0))
         pygame.display.set_caption("Миссии")
@@ -34,7 +38,7 @@ class Missions:
                                         int(self.window_height / 7.43), 'Перейти к первой миссии',
                                         'resources/pictures/after1.png',
                                         'resources/pictures/after.png',
-                                        'resources/sound/start.mp3')
+                                        'resources/sound/btn_on.mp3')
         self.second = Button(int(self.window_width / 3.5), int(self.window_height / 2.14), int(self.window_width / 2),
                                          int(self.window_height / 7.43), 'Перейти к второй миссии',
                                          'resources/pictures/before.png',
@@ -60,7 +64,7 @@ class Missions:
 
     def open(self, full=False):
         if full:
-            self.background_image = pygame.image.load("resources/pictures/background_image.png").convert_alpha()
+            self.background_image = pygame.image.load("resources/pictures/mis_final.png").convert_alpha()
             self.background_image = pygame.transform.scale(self.background_image,
                                                            (self.window_width, self.window_height))
             self.window.blit(self.background_image, (0, 0))
