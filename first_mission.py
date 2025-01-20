@@ -39,6 +39,7 @@ class First_mission:
         pygame.display.set_caption("Миссии")
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
+        self.change_counter = 5
         self.font = pygame.font.Font("resources/other/shrift.otf", 20)
         self.stat_health = self.font.render("", True, self.button_color)
         self.stat_name = self.font.render("", True, self.button_color)
@@ -46,6 +47,8 @@ class First_mission:
         self.stat_frac = self.font.render("", True, self.button_color)
         self.bot_damage_text = self.font.render("Ваш урон: 0", True, self.button_color)
         self.player_damage_text = self.font.render("Урон противника: 0", True, self.button_color)
+        self.player_status = self.font.render("Обменяйте или выложите карту", True, self.button_color)
+        # self.change_text = self.font.render(f"Обменов осталось: {self.change_counter}", True, self.button_color)
         self.bot_damage = 0
         self.player_damage = 0
         self.bot_health = 0
@@ -73,26 +76,21 @@ class First_mission:
                                          f'resources/character/{temp}/sound.mp3')))
             if len(self.deck) == 8:
                 break
-        self.change_counter = 3
         self.turn = True
         self.last_used_card = None
         self.stat_image = None
-        self.action_button = Button(int(self.window_width / 36), int(self.window_height / 1.24),
+        self.action_button = Button(int(self.window_width / 36), int(self.window_height / 1.14),
                                     int(self.window_width / 5), int(self.window_height / 20),
                                     'Приступить к битве', 'resources/pictures/before.png',
                                     'resources/pictures/after.png', 'resources/sound/btn_on.mp3')
 
         enemy = Enemy(self.window_width, self.window_height)
-        enemy.fill_opponents_deck()
+        enemy.fill_opponents_deck("Щадящий ")
         self.bots_deck = enemy.enemy_deck
 
-        self.count_e = 0
-        self.count_m = 0
-        self.count_s = 0
-        self.count_e_bots = 0
-        self.count_m_bots = 0
+        self.player_rows = [0, 0, 0]
+        self.bot_rows = [0, 0, 0]
         self.bots_card_num = 0
-        self.count_s_bots = 0
         self.bots_putted_card = []
         self.pas = False
         self.player_hearts = 2
@@ -119,8 +117,12 @@ class First_mission:
                         elif self.deck[i][1].is_hovered and self.turn == True:
                             self.put_card(i)
                     if self.action_button.is_hovered and self.turn and self.change_counter != 0:
+                        self.member_change(self.change_counter)
                         self.change_counter = 0
-                        self.action_button.text = 'Выложите карту'
+                        self.player_status = self.font.render("Выложите карту", True, self.button_color)
+                        # self.action_button.text = 'Выложите карту'
+                    if self.change_counter == 0:
+                        self.player_status = self.font.render("Выложите карту", True, self.button_color)
                     if self.action_button.text == 'пас' and self.action_button.is_hovered:
                         self.bot_final_turn()
 
@@ -170,19 +172,19 @@ class First_mission:
         self.stat['bots_putted_card'] += 1
 
         if self.bots_deck[self.bots_card_num][0].frac[0] == "s":  # первый ряд
-            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.count_s_bots
+            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[0]
             card_y = int(self.window_height / 3.73)
-            self.count_s_bots += 1
+            self.bot_rows[0] += 1
 
         elif self.bots_deck[self.bots_card_num][0].frac[0] == "m":  # второй ряд
-            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.count_m_bots
+            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[1]
             card_y = int(self.window_height / 7)
-            self.count_m_bots += 1
+            self.bot_rows[1] += 1
 
         else:  # третий ряд
-            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.count_e_bots
+            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[2]
             card_y = int(0)
-            self.count_e_bots += 1
+            self.bot_rows[2] += 1
 
         self.bot_health += int(self.bots_deck[self.bots_card_num][0].health)
         self.bot_damage += int(self.bots_deck[self.bots_card_num][0].damage)
@@ -228,20 +230,25 @@ class First_mission:
         self.redrawing()
 
     def redrawing(self):
+        print(self.putted_card)
         self.window.blit(self.background_image, (0, 0))
-        self.window.blit(self.stat_name, (int(self.window_width / 7.5), int(self.window_height / 2.1)))
-        self.window.blit(self.stat_health, (int(self.window_width / 7.5), int(self.window_height / 2)))
-        self.window.blit(self.stat_damage, (int(self.window_width / 7.5), int(self.window_height / 1.9)))
-        self.window.blit(self.stat_frac, (int(self.window_width / 7.5), int(self.window_height / 1.8)))
-        self.window.blit(self.stat_frac, (int(self.window_width), int(self.window_height / 1.8)))
+        self.window.blit(self.stat_name, (int(self.window_width / 7.5), int(self.window_height / 2.3)))
+        self.window.blit(self.stat_health, (int(self.window_width / 7.5), int(self.window_height / 2.2)))
+        self.window.blit(self.stat_damage, (int(self.window_width / 7.5), int(self.window_height / 2.1)))
+        self.window.blit(self.stat_frac, (int(self.window_width / 7.5), int(self.window_height / 2)))
+        self.window.blit(self.stat_frac, (int(self.window_width), int(self.window_height / 1.9)))
         self.player_health_text = self.font.render(f"Ваше здоровье: {self.player_health}", True, self.button_color)
         self.bot_health_text = self.font.render(f"Здоровье противника:{self.bot_health}", True, self.button_color)
         self.bot_damage_text = self.font.render(f"Ваш урон: {self.player_damage}", True, self.button_color)
         self.player_damage_text = self.font.render(f"Урон противника: {self.bot_damage}", True, self.button_color)
+        # self.change_text = self.font.render(f"Обменов осталось: {self.change_counter}", True, self.button_color)
         self.window.blit(self.bot_damage_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 100)))
         self.window.blit(self.player_damage_text, (int(self.window_width / 1.25), int(self.window_height / 1.8)))
+        self.change_player_status()
+        self.window.blit(self.player_status, (int(self.window_width / 36), int(self.window_height / 1.24)))
         self.window.blit(self.bot_health_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 200)))
         self.window.blit(self.player_health_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 300)))
+        # self.window.blit(self.change_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 400)))
         self.back_button.draw(self.window)
         for i in self.deck:
             i[1].draw(self.window)
@@ -265,18 +272,18 @@ class First_mission:
         if self.deck[i][0].used is False:
             temp = self.deck[i][0].path
             if self.deck[i][0].frac[0] == "s":  # первый ряд
-                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.count_s
+                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.player_rows[0]
                 card_y = int(self.window_height / 2.4 + 10)
-                self.count_s += 1
+                self.player_rows[0] += 1
             elif self.deck[i][0].frac[0] == "m":  # второй ряд
-                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.count_m
+                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.player_rows[1]
                 card_y = int(self.window_height / 1.8 - 1)
-                self.count_m += 1
+                self.player_rows[1] += 1
 
             else:  # третий ряд
-                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.count_e
+                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.player_rows[2]
                 card_y = int(self.window_height / 1.48 + 30)
-                self.count_e += 1
+                self.player_rows[2] += 1
 
             self.player_damage += int(Character(temp).damage)
             self.player_health += int(Character(temp).health)
@@ -335,16 +342,10 @@ class First_mission:
             self.finish()
 
         enemy = Enemy(self.window_width, self.window_height)
-        enemy.fill_opponents_deck()
+        enemy.fill_opponents_deck("Щадящий")
         self.bots_deck = enemy.enemy_deck
-        self.putted_card = []
-        self.bots_card_num = 0
-        self.count_e = 0
-        self.count_m = 0
-        self.count_s = 0
-        self.count_e_bots = 0
-        self.count_m_bots = 0
-        self.count_s_bots = 0
+        if self.change_counter != 0 or self.change_counter != 5:
+            self.change_counter = self.change_mem
         self.bots_putted_card = []
         self.pas = False
         self.new_deck = []
@@ -370,12 +371,9 @@ class First_mission:
             self.deck.append(i)
             i[1].draw(self.window)
             counter += 1
-        self.player_damage = 0
-        self.bot_damage = 0
-        self.player_health = 0
-        self.bot_health = 0
-
-        self.turn = True
+        self.null_everything()
+        self.action_button.text = "Приступить к битве"
+        self.player_status = self.player_status = self.font.render("Обменяйте или выложите карту", True, self.button_color)
         self.redrawing()
 
     def get_fps_result(self):
@@ -386,3 +384,34 @@ class First_mission:
         Stat = Statistic_window(self.window_width, self.window_height, self.window, self.previous_object, self.stat,
                                 self.comp)
         Stat.open()
+    def member_change(self, arg):
+        self.change_mem = arg
+
+    def change_player_status(self):
+        if not self.turn:
+            self.player_status = self.font.render("Ожидайте хода противника", True, self.button_color)
+        if sum(self.bot_rows) != 0 and self.turn:
+            self.player_status = self.font.render("Выложите карту", True, self.button_color)
+
+    def null_everything(self):
+        self.putted_card = []
+        self.bots_card_num = 0
+        self.player_rows = [0, 0, 0]
+        self.bot_rows = [0, 0, 0]
+        self.player_damage = 0
+        self.bot_damage = 0
+        self.player_health = 0
+        self.bot_health = 0
+
+        self.turn = True
+
+    def check_frac(self, arg):
+        result = {"m": 0, "s": 0, "e": 0}
+        for i in arg:
+            if i.frac[0].lower() == "m":
+                result["m"] += 1
+            elif i.frac[0].lower() == "s":
+                result["s"] += 1
+            elif i.frac[0].lower() == "e":
+                result["e"] += 1
+        return result
