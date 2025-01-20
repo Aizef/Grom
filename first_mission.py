@@ -11,6 +11,7 @@ from character import Character
 from Statistic import Statistic_window
 from enemy import Enemy
 
+
 class First_mission:
     def __init__(self, window_width, window_height, screen, pr):
         pygame.init()
@@ -49,10 +50,7 @@ class First_mission:
         self.player_damage_text = self.font.render("Урон противника: 0", True, self.button_color)
         self.player_status = self.font.render("Обменяйте или выложите карту", True, self.button_color)
         # self.change_text = self.font.render(f"Обменов осталось: {self.change_counter}", True, self.button_color)
-        self.bot_damage = 0
-        self.player_damage = 0
-        self.bot_health = 0
-        self.player_health = 0
+        self.null_everything()
         self.previous_screen = screen
         #  рендер окна
         self.previous_screen.blit(self.window, (0, 0))
@@ -85,7 +83,7 @@ class First_mission:
                                     'resources/pictures/after.png', 'resources/sound/btn_on.mp3')
 
         enemy = Enemy(self.window_width, self.window_height)
-        enemy.fill_opponents_deck("Щадящий ")
+        enemy.fill_opponents_deck("Щадящий")
         self.bots_deck = enemy.enemy_deck
 
         self.player_rows = [0, 0, 0]
@@ -204,10 +202,75 @@ class First_mission:
                                                                                     f'resources/character/{temp}/after.png',
                                                                                     f'resources/character/{temp}/sound.mp3')))
         self.bots_card_num += 1
-        if self.bots_card_num == len(self.bots_deck):
-            self.over()
+        for i in self.putted_card:
+            i[1].draw(self.window)
+
+        bots_frac = self.check_frac([i[0] for i in self.bots_putted_card])
+        font = pygame.font.SysFont("Times New Roman", 40)
+        if bots_frac["e"] >= 3 and "Я инженер — этим всё сказано!" not in self.used_bot_comb:
+            self.player_damage = 0
+            self.used_bot_comb.append("Я инженер — этим всё сказано!")
+            text = font.render('Противник собрал комбинацию: "Я инженер — этим всё сказано!"', True, self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+            text = font.render('Ваш урон уменьшен до 0', True, self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+            pygame.display.flip()
+            time.sleep(0.5)
+        elif bots_frac["s"] >= 3 and "Ученье-свет!" not in self.used_bot_comb:
+            self.player_health += 150
+            self.used_bot_comb.append("Ученье-свет!")
+            text = font.render('Противник собрал комбинацию: "Ученье-свет!"', True, self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+            text = font.render('Здоровье противника увеличено на 150', True, self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+            pygame.display.flip()
+            time.sleep(0.5)
+        elif bots_frac["m"] >= 3 and "Искалеченная плоть, искалеченная душа" not in self.used_bot_comb:
+            self.used_bot_comb.append("Искалеченная плоть, искалеченная душа")
+            self.player_damage += 100
+            text = font.render('Урон противника увеличен на 100', True, self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+            text = font.render('Противник собрал комбинацию: "Искалеченная плоть, искалеченная душа"', True,
+                               self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+            pygame.display.flip()
+            time.sleep(0.5)
+        elif bots_frac["s"] >= 2 and bots_frac["m"] >= 2 and "Одна голова хорошо, а две — мутант!" not in self.used_bot_comb:
+            self.used_bot_comb.append("Одна голова хорошо, а две — мутант!")
+            self.bot_health += 200
+            text = font.render('Здоровье противника увеличено на 200', True, self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+            text = font.render('Противник собрал комбинацию: "Одна голова хорошо, а две — мутант!"', True,
+                               self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+            pygame.display.flip()
+            time.sleep(0.5)
+        elif bots_frac["e"] >= 2 and (
+                bots_frac["s"] >= 2 or bots_frac["m"] >= 2) and "Человек хуже мутанта, когда он мутант." not in self.used_bot_comb:
+            self.used_bot_comb.append("Человек хуже мутанта, когда он мутант.")
+            self.bot_damage += 350
+            text = font.render('Урон противника увеличен на 350', True, self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+            text = font.render('Противник собрал комбинацию: "Человек хуже мутанта, когда он мутант."', True,
+                               self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+            pygame.display.flip()
+            time.sleep(0.5)
+        elif bots_frac["s"] >= 5 and "Плох тот ученый который не инженер" not in self.used_bot_comb:
+            self.used_bot_comb.append("Плох тот ученый который не инженер")
+            self.bot_health += 450
+            text = font.render('Здоровье противника увеличено на 450', True, self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+            text = font.render('Противник собрал комбинацию: "Плох тот ученый который не инженер"', True,
+                               self.button_color)
+            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+            pygame.display.flip()
+            time.sleep(0.5)
+
         self.turn = True
         self.action_button.text = 'пас'
+        if self.bots_card_num == len(self.bots_deck):
+            self.over()
         time.sleep(0.3)
 
     def change(self, num):
@@ -230,7 +293,6 @@ class First_mission:
         self.redrawing()
 
     def redrawing(self):
-        print(self.putted_card)
         self.window.blit(self.background_image, (0, 0))
         self.window.blit(self.stat_name, (int(self.window_width / 7.5), int(self.window_height / 2.3)))
         self.window.blit(self.stat_health, (int(self.window_width / 7.5), int(self.window_height / 2.2)))
@@ -239,8 +301,8 @@ class First_mission:
         self.window.blit(self.stat_frac, (int(self.window_width), int(self.window_height / 1.9)))
         self.player_health_text = self.font.render(f"Ваше здоровье: {self.player_health}", True, self.button_color)
         self.bot_health_text = self.font.render(f"Здоровье противника:{self.bot_health}", True, self.button_color)
-        self.bot_damage_text = self.font.render(f"Ваш урон: {self.player_damage}", True, self.button_color)
-        self.player_damage_text = self.font.render(f"Урон противника: {self.bot_damage}", True, self.button_color)
+        self.bot_damage_text = self.font.render(f"Урон противника: {self.bot_damage}", True, self.button_color)
+        self.player_damage_text = self.font.render(f"Ваш урон: {self.player_damage}", True, self.button_color)
         # self.change_text = self.font.render(f"Обменов осталось: {self.change_counter}", True, self.button_color)
         self.window.blit(self.bot_damage_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 100)))
         self.window.blit(self.player_damage_text, (int(self.window_width / 1.25), int(self.window_height / 1.8)))
@@ -303,6 +365,68 @@ class First_mission:
                                                              f'resources/character/{temp}/sound.mp3')))
             for i in self.putted_card:
                 i[1].draw(self.window)
+            a = self.check_frac([i[0] for i in self.putted_card])
+            font = pygame.font.SysFont("Times New Roman", 40)
+            if a["e"] >= 3 and "Я инженер — этим всё сказано!" not in self.used_comb:
+                self.bot_damage = 0
+                self.used_comb.append("Я инженер — этим всё сказано!")
+                text = font.render('Вы собрали комбинацию: "Я инженер — этим всё сказано!"', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                text = font.render('Урон противника уменьшен до 0', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                pygame.display.flip()
+                time.sleep(1.5)
+            elif a["s"] >= 3 and "Ученье-свет!" not in self.used_comb:
+                self.player_health += 150
+                self.used_comb.append("Ученье-свет!")
+                text = font.render('Вы собрали комбинацию: "Ученье-свет!"', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                text = font.render('Ваше здоровье увеличено на 150', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                pygame.display.flip()
+                time.sleep(1.5)
+            elif a["m"] >= 3 and "Искалеченная плоть, искалеченная душа" not in self.used_comb:
+                self.used_comb.append("Искалеченная плоть, искалеченная душа")
+                self.player_damage += 100
+                text = font.render('Ваш урон увеличен на 100', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                text = font.render('Вы собрали комбинацию: "Искалеченная плоть, искалеченная душа"', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                pygame.display.flip()
+                time.sleep(1.5)
+            elif a["s"] >= 2 and a["m"] >= 2 and "Одна голова хорошо, а две — мутант!" not in self.used_comb:
+                self.used_comb.append("Одна голова хорошо, а две — мутант!")
+                self.player_health += 200
+                text = font.render('Ваше здоровье увеличено на 200', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                text = font.render('Вы собрали комбинацию: "Одна голова хорошо, а две — мутант!"', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                pygame.display.flip()
+                time.sleep(1.5)
+            elif a["e"] >= 2 and (
+                    a["s"] >= 2 or a["m"] >= 2) and "Человек хуже мутанта, когда он мутант." not in self.used_comb:
+                self.used_comb.append("Человек хуже мутанта, когда он мутант.")
+                self.player_damage += 350
+                text = font.render('Ваш урон увеличен на 350', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                text = font.render('Вы собрали комбинацию: "Человек хуже мутанта, когда он мутант."', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                pygame.display.flip()
+                time.sleep(1.5)
+            elif a["s"] >= 5 and "Плох тот ученый который не инженер" not in self.used_comb:
+                self.used_comb.append("Плох тот ученый который не инженер")
+                self.player_health += 450
+                text = font.render('Ваше здоровье увеличено на 450', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                text = font.render('Вы собрали комбинацию: "Плох тот ученый который не инженер"', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                pygame.display.flip()
+                time.sleep(1.5)
+
             self.turn = False
             self.redrawing()
             self.stat['players_putted_car'] += 1
@@ -373,7 +497,8 @@ class First_mission:
             counter += 1
         self.null_everything()
         self.action_button.text = "Приступить к битве"
-        self.player_status = self.player_status = self.font.render("Обменяйте или выложите карту", True, self.button_color)
+        self.player_status = self.player_status = self.font.render("Обменяйте или выложите карту", True,
+                                                                   self.button_color)
         self.redrawing()
 
     def get_fps_result(self):
@@ -384,6 +509,7 @@ class First_mission:
         Stat = Statistic_window(self.window_width, self.window_height, self.window, self.previous_object, self.stat,
                                 self.comp)
         Stat.open()
+
     def member_change(self, arg):
         self.change_mem = arg
 
@@ -395,6 +521,8 @@ class First_mission:
 
     def null_everything(self):
         self.putted_card = []
+        self.used_comb = []
+        self.used_bot_comb = []
         self.bots_card_num = 0
         self.player_rows = [0, 0, 0]
         self.bot_rows = [0, 0, 0]
