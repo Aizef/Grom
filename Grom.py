@@ -1,3 +1,4 @@
+import json
 import sys
 from ctypes import cast
 
@@ -21,22 +22,22 @@ class Grom:
         pygame.mixer.music.play(-1)
         self.width = width
         self.height = height
-        if open('resources/settings/fullscreen_status.txt').read().strip() == 'True':
+        self.settings = json.load(open('resources/settings/settings.json'))
+
+        if self.settings['fullscreen_status'] == 'True':
             self.screen = pygame.display.set_mode((0,0), FULLSCREEN)
         else:
             self.screen = pygame.display.set_mode((self.width, self.height))
+
         self.background_image = pygame.image.load("resources/pictures/missions_pic.png")
         self.icon_image = pygame.image.load("resources/pictures/icon.png")
         pygame.display.set_icon(self.icon_image)
         self.grom_clock = pygame.time.Clock()
 
-        with open("resources/settings/volume_level.txt", mode="r", encoding="utf-8") as file:
-            current_volume = file.readline().strip()
-
         devices = AudioUtilities.GetSpeakers()
         interface = devices.Activate(IAudioEndpointVolume._iid_, CLSCTX_ALL, None)
         self.grom_volume = cast(interface, POINTER(IAudioEndpointVolume))
-        self.grom_volume.SetMasterVolumeLevelScalar(float(current_volume) / 100, None)
+        self.grom_volume.SetMasterVolumeLevelScalar(float(self.settings['volume_level']) / 100, None)
 
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
         pygame.display.set_caption("Grom:Essense Of Chaos")
@@ -53,9 +54,7 @@ class Grom:
                                         'resources/pictures/after1.png',
                                         'resources/pictures/after.png',
                                         'resources/sound/understood.mp3')
-        with open("resources/settings/fps_status.txt", mode="r", encoding="utf-8") as fps_file:
-            fps_status = fps_file.readline().strip()
-        if fps_status == "True":
+        if self.get_fps_result() == "True":
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (255, 205, 234))
         else:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
@@ -64,7 +63,8 @@ class Grom:
 
     def reopen(self, a, s):
         self.width, self.height = a, s
-        if open('resources/settings/fullscreen_status.txt').read().strip() == 'True':
+        self.settings = json.load(open('resources/settings/settings.json'))
+        if self.settings['fullscreen_status'] == 'True':
             self.screen = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
             self.screen = pygame.display.set_mode((self.width, self.height))
@@ -121,16 +121,13 @@ class Grom:
 
             if self.get_fps_result() == "True":
                 self.grom_text_show_fps = self.font.render(f"{str(self.grom_clock.get_fps()).split('.')[0]}", True, (255, 205, 234))
-            else:
-                self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
+                self.screen.blit(self.grom_text_show_fps, (0, 0))
+
             self.go_to_desktop_btn.draw(self.screen)
 
-            self.screen.blit(self.grom_text_show_fps, (0, 0))
             pygame.display.flip()
-
             self.screen.blit(self.background_image, (0, 0))
 
 
     def get_fps_result(self):
-        with open("resources/settings/fps_status.txt", mode="r", encoding="utf-8") as fps_file:
-            return fps_file.readline().strip()
+        return self.settings['fps_status']

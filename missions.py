@@ -1,3 +1,4 @@
+import json
 import sys
 import pygame
 from pygame import FULLSCREEN
@@ -9,12 +10,12 @@ from first_mission import First_mission
 class Missions:
     def __init__(self, window_width, window_height, screen, last_object):
         pygame.init()
-        self.clock = pygame.time.Clock()
+        self.grom_clock = pygame.time.Clock()
 
         self.window_width = window_width
         self.window_height = window_height
         #  рисуем окно настроек
-        if open('resources/settings/fullscreen_status.txt').read().strip() == 'True':
+        if json.load(open('resources/settings/settings.json'))['fullscreen_status'] == 'True':
             self.window = pygame.display.set_mode((0,0), FULLSCREEN)
         else:
             self.window = pygame.display.set_mode((self.window_width, self.window_height))
@@ -27,9 +28,8 @@ class Missions:
         self.grom_clock = pygame.time.Clock()
 
         self.font = pygame.font.Font("resources/other/shrift.otf", 40)
-        with open("resources/settings/fps_status.txt", mode="r", encoding="utf-8") as fps_file:
-            fps_status = fps_file.readline().strip()
-        if fps_status == "True":
+
+        if self.get_fps_result() == "True":
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (255, 205, 234))
         else:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
@@ -116,5 +116,4 @@ class Missions:
         self.back_object.main_menu()
 
     def get_fps_result(self):
-        with open("resources/settings/fps_status.txt", mode="r", encoding="utf-8") as fps_file:
-            return fps_file.readline().strip()
+        return json.load(open('resources/settings/settings.json'))['fps_status']
