@@ -36,7 +36,7 @@ class Settings:
         for i in [res for res in pygame.display.list_modes() if res[0] >= 800 and res[1] >= 600][::-1]:
             self.screen_list.append(f'{i[0]} x {i[1]}')
 
-        self.temp_screen = len(self.screen_list) - 1
+        self.temp_screen = self.get('screen_status')
         self.screen_size = (self.window_width,
                             self.window_height)
         if self.setting['fullscreen_status'] == 'True':
@@ -177,6 +177,8 @@ class Settings:
 
     def redrawing(self, full=False):
         self.window.blit(self.background_image, (0, 0))
+        print(self.temp_screen)
+        print(json.load(open('resources/settings/settings.json')))
         if full:
             self.back_btn = Settings_Button(int(self.screen_size[0] / 1.29), 0, int(self.screen_size[0] / 4.4),
                                             int(self.screen_size[1] / 15.2), 'Вернуться',
