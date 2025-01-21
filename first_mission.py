@@ -1,3 +1,4 @@
+import json
 import os
 import sys
 from random import choice
@@ -8,7 +9,7 @@ import time
 
 from buttons import Button
 from character import Character
-from Statistic import Statistic_window
+from statistic import Statistic_window
 from enemy import Enemy
 
 
@@ -21,16 +22,15 @@ class First_mission:
         self.previous_object = pr
         self.grom_clock = pygame.time.Clock()
         self.font = pygame.font.Font('resources/other/shrift.otf', 18)
-
-        with open("resources/settings/fps_status.txt", mode="r", encoding="utf-8") as fps_file:
-            fps_status = fps_file.readline().strip()
+        self.settings = json.load(open("resources/settings/settings.json"))
+        fps_status = self.settings['fps_status']
         if fps_status == "True":
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (255, 205, 234))
         else:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
         self.comp = False
         #  рисуем окно настроек
-        if open('resources/settings/fullscreen_status.txt').read().strip() == 'True':
+        if self.settings['fullscreen_status']== 'True':
             self.window = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
             self.window = pygame.display.set_mode((self.window_width, self.window_height))
@@ -502,8 +502,7 @@ class First_mission:
         self.redrawing()
 
     def get_fps_result(self):
-        with open("resources/settings/fps_status.txt", mode="r", encoding="utf-8") as fps_file:
-            return fps_file.readline().strip()
+        return self.settings['fps_status']
 
     def finish(self):
         Stat = Statistic_window(self.window_width, self.window_height, self.window, self.previous_object, self.stat,

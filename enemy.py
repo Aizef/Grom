@@ -79,4 +79,3 @@ class Enemy:
         card_to_put = self.enemy_deck[self.putted_amount]
         self.putted_amount += 1
         return card_to_put
-
