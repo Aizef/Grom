@@ -468,8 +468,11 @@ class First_mission:
         enemy = Enemy(self.window_width, self.window_height)
         enemy.fill_opponents_deck("Щадящий")
         self.bots_deck = enemy.enemy_deck
-        if self.change_counter != 0 or self.change_counter != 5:
-            self.change_counter = self.change_mem
+        try:
+            if self.change_counter != 0 or self.change_counter != 5:
+                self.change_counter = self.change_mem
+        except AttributeError as ae:
+            pass
         self.bots_putted_card = []
         self.pas = False
         self.new_deck = []
