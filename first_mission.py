@@ -7,6 +7,7 @@ import pygame
 from pygame import FULLSCREEN
 import time
 
+from anim_sprite import AnimatedSprite, load_image
 from buttons import Button
 from character import Character
 from statistic import Statistic_window
@@ -17,6 +18,12 @@ class First_mission:
     def __init__(self, window_width, window_height, screen, pr):
         pygame.init()
         pygame.display.set_caption('Миссия первая')
+        self.all_sprites = pygame.sprite.Group()
+        self.bots_health = [AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2, window_height // 3.85,
+                                           self.all_sprites)]
+        self.players_health = [AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2, window_height // 1.54,
+                                           self.all_sprites)]
+
         self.window_width = window_width
         self.window_height = window_height
         self.previous_object = pr
@@ -30,7 +37,7 @@ class First_mission:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
         self.comp = False
         #  рисуем окно настроек
-        if self.settings['fullscreen_status']== 'True':
+        if self.settings['fullscreen_status'] == 'True':
             self.window = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
             self.window = pygame.display.set_mode((self.window_width, self.window_height))
@@ -147,6 +154,7 @@ class First_mission:
 
             for i in self.deck:
                 i[1].check_hover(pos)
+
             self.redrawing()
 
     def back(self):
@@ -235,7 +243,8 @@ class First_mission:
             self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
             pygame.display.flip()
             time.sleep(0.5)
-        elif bots_frac["s"] >= 2 and bots_frac["m"] >= 2 and "Одна голова хорошо, а две — мутант!" not in self.used_bot_comb:
+        elif bots_frac["s"] >= 2 and bots_frac[
+            "m"] >= 2 and "Одна голова хорошо, а две — мутант!" not in self.used_bot_comb:
             self.used_bot_comb.append("Одна голова хорошо, а две — мутант!")
             self.bot_health += 200
             text = font.render('Здоровье противника увеличено на 200', True, self.button_color)
@@ -246,7 +255,8 @@ class First_mission:
             pygame.display.flip()
             time.sleep(0.5)
         elif bots_frac["e"] >= 2 and (
-                bots_frac["s"] >= 2 or bots_frac["m"] >= 2) and "Человек хуже мутанта, когда он мутант." not in self.used_bot_comb:
+                bots_frac["s"] >= 2 or bots_frac[
+            "m"] >= 2) and "Человек хуже мутанта, когда он мутант." not in self.used_bot_comb:
             self.used_bot_comb.append("Человек хуже мутанта, когда он мутант.")
             self.bot_damage += 350
             text = font.render('Урон противника увеличен на 350', True, self.button_color)
@@ -294,6 +304,12 @@ class First_mission:
 
     def redrawing(self):
         self.window.blit(self.background_image, (0, 0))
+        if self.bots_hearts == 1 and self.bots_health[0].cur_frame < 2:
+            self.bots_health[0].update()
+        if self.player_hearts == 1 and self.players_health[0].cur_frame < 2:
+            self.players_health[0].update()
+        self.all_sprites.draw(self.window)
+
         self.window.blit(self.stat_name, (int(self.window_width / 7.5), int(self.window_height / 2.3)))
         self.window.blit(self.stat_health, (int(self.window_width / 7.5), int(self.window_height / 2.2)))
         self.window.blit(self.stat_damage, (int(self.window_width / 7.5), int(self.window_height / 2.1)))
