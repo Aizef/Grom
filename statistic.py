@@ -17,7 +17,7 @@ class Statistic_window:
 
         self.button_text_color = (0, 0, 0)
         self.settings = json.load(open("resources/settings/settings.json"))
-        if self.settings['fullscreen_status'] == 'True':
+        if self.settings['fullscreen_status '] == 'True':
             self.window = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
             self.window = pygame.display.set_mode((self.window_width, self.window_height))
