@@ -177,8 +177,6 @@ class Settings:
 
     def redrawing(self, full=False):
         self.window.blit(self.background_image, (0, 0))
-        print(self.temp_screen)
-        print(json.load(open('resources/settings/settings.json')))
         if full:
             self.back_btn = Settings_Button(int(self.screen_size[0] / 1.29), 0, int(self.screen_size[0] / 4.4),
                                             int(self.screen_size[1] / 15.2), 'Вернуться',

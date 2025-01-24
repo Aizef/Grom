@@ -21,30 +21,25 @@ class Button:
         if sound_path:
             self.sound = pygame.mixer.Sound(sound_path)
         self.is_hovered = False
+        self.font = pygame.font.Font("resources/other/shrift.otf", 20)
+        self.text_surface = self.font.render(self.text, True, (255, 205, 234))
+        self.font_2 = pygame.font.SysFont("Arial", 20)
+        self.text_surface_2 = self.font_2.render(self.text, True, (255, 205, 234))
+        self.text_rect = self.text_surface.get_rect(center=self.rect.center)
 
     def draw(self, screen, temp=0):  # функция для рендера кнопки
-        if self.is_hovered:
+        if self.is_hovered or temp == 1:
             current_image = self.hover_image
         else:
             current_image = self.image
 
-        if temp == 1:
-            current_image = self.hover_image
-
-        elif temp == -1:
+        if temp == -1:
             current_image = self.image
-        self.rect = self.image.get_rect(topleft=(self.x, self.y))
         screen.blit(current_image, self.rect.topleft)
         if temp == 0:
-            font = pygame.font.Font("resources/other/shrift.otf", 20)
-            text_surface = font.render(self.text, True, (255, 205, 234))
-            text_rect = text_surface.get_rect(center=self.rect.center)
-            screen.blit(text_surface, text_rect)
+            screen.blit(self.text_surface, self.text_rect)
         elif temp == 10:
-            font = pygame.font.SysFont("Arial", 20)
-            text_surface = font.render(self.text, True, (255, 205, 234))
-            text_rect = text_surface.get_rect(center=self.rect.center)
-            screen.blit(text_surface, text_rect)
+            screen.blit(self.text_surface_2, self.text_rect)
 
     def check_hover(self, mouse_pos):
         self.is_hovered = self.rect.collidepoint(mouse_pos)

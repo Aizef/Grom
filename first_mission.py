@@ -20,9 +20,9 @@ class First_mission:
         pygame.display.set_caption('Миссия первая')
         self.all_sprites = pygame.sprite.Group()
         self.bots_health = [AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2, window_height // 3.85,
-                                           self.all_sprites)]
+                                           self.all_sprites, 10)]
         self.players_health = [AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2, window_height // 1.54,
-                                           self.all_sprites)]
+                                           self.all_sprites, 10)]
 
         self.window_width = window_width
         self.window_height = window_height
@@ -65,6 +65,9 @@ class First_mission:
         self.back_button = Button(self.window_width - self.window_width // 10, 0, self.window_width // 10, 100,
                                   'Сдаться', 'resources/pictures/before.png', 'resources/pictures/after.png',
                                   'resources/sound/btn_on.mp3')
+        self.guide_button = Button(self.window_width - self.window_width // 10, self.window_height // 5, self.window_width // 10, 100,
+                                  'Справка', 'resources/pictures/before.png', 'resources/pictures/after.png',
+                                  'resources/sound/btn_on.mp3')
         self.deck = []
         self.putted_card = []
         self.ch = []
@@ -102,6 +105,12 @@ class First_mission:
         self.bots_hearts = 2
         self.stat = {'bots_putted_card': 0, 'players_putted_car': 0, 'bots_summary_damage': 0,
                      'players_summary_damage': 0, 'bots_summary_health': 0, 'players_summary_health': 0}
+        temp = self.bots_deck[0][0].path
+        self.next_bot_card = (Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19), int(self.window_width / 15.52),
+                                                   int(self.window_height / 6.4), '',
+                                                   f'resources/character/{temp}/image.png',
+                                                   f'resources/character/{temp}/after.png',
+                                                   f'resources/character/{temp}/sound.mp3'))
 
     def open(self):
         running = True
@@ -131,6 +140,10 @@ class First_mission:
                     if self.action_button.text == 'пас' and self.action_button.is_hovered:
                         self.bot_final_turn()
 
+
+                  #  if self.guide_button.is_hovered:
+                     #   self.guide()
+
                 for i in self.deck:
                     if i[1].is_hovered:
                         self.stat_name = self.font.render(f"Имя: {i[0].name}", True, self.button_color)
@@ -140,6 +153,14 @@ class First_mission:
                                                  f'resources/character/{i[0].path}/image.png')
                         self.stat_damage = self.font.render(f"Урон: {i[0].damage}", True, self.button_color)
                         self.stat_frac = self.font.render(f"Фракция: {i[0].frac}", True, self.button_color)
+                if self.next_bot_card[1].is_hovered:
+                    self.stat_name = self.font.render(f"Имя: {self.next_bot_card[0].name}", True, self.button_color)
+                    self.stat_health = self.font.render(f"Здоровье: {self.next_bot_card[0].health}", True, self.button_color)
+                    self.stat_image = Button(int(self.window_width / 15), int(self.window_height / 2.3),
+                                             int(self.window_width / 15.52), int(self.window_height / 6.4), '',
+                                             f'resources/character/{self.next_bot_card[0].path}/image.png')
+                    self.stat_damage = self.font.render(f"Урон: {self.next_bot_card[0].damage}", True, self.button_color)
+                    self.stat_frac = self.font.render(f"Фракция: {self.next_bot_card[0].frac}", True, self.button_color)
 
             self.grom_clock.tick(90)
             if self.get_fps_result() == "True":
@@ -149,12 +170,13 @@ class First_mission:
                 self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
 
             self.back_button.check_hover(pos)
+            self.next_bot_card[1].check_hover(pos)
+            self.guide_button.check_hover(pos)
 
             self.action_button.check_hover(pos)
 
             for i in self.deck:
                 i[1].check_hover(pos)
-
             self.redrawing()
 
     def back(self):
@@ -208,7 +230,13 @@ class First_mission:
                                                                                     '',
                                                                                     f'resources/character/{temp}/image.png',
                                                                                     f'resources/character/{temp}/after.png',
+
                                                                                     f'resources/character/{temp}/sound.mp3')))
+        self.next_bot_card = Button(int(self.window_width / 1.5), int(self.window_height / 17), int(self.window_width / 15.52),
+                                                   int(self.window_height / 6.4), '',
+                                                   f'resources/character/{temp}/image.png',
+                                                   f'resources/character/{temp}/after.png',
+                                                   f'resources/character/{temp}/sound.mp3')
         self.bots_card_num += 1
         for i in self.putted_card:
             i[1].draw(self.window)
@@ -304,30 +332,32 @@ class First_mission:
 
     def redrawing(self):
         self.window.blit(self.background_image, (0, 0))
-        if self.bots_hearts == 1 and self.bots_health[0].cur_frame < 2:
+        self.next_bot_card[1].draw(self.window)
+        if self.bots_hearts == 1 and self.bots_health[0].cur_frame < 20:
             self.bots_health[0].update()
-        if self.player_hearts == 1 and self.players_health[0].cur_frame < 2:
+        if self.player_hearts == 1 and self.players_health[0].cur_frame < 20:
             self.players_health[0].update()
         self.all_sprites.draw(self.window)
-
         self.window.blit(self.stat_name, (int(self.window_width / 7.5), int(self.window_height / 2.3)))
         self.window.blit(self.stat_health, (int(self.window_width / 7.5), int(self.window_height / 2.2)))
         self.window.blit(self.stat_damage, (int(self.window_width / 7.5), int(self.window_height / 2.1)))
         self.window.blit(self.stat_frac, (int(self.window_width / 7.5), int(self.window_height / 2)))
-        self.window.blit(self.stat_frac, (int(self.window_width), int(self.window_height / 1.9)))
         self.player_health_text = self.font.render(f"Ваше здоровье: {self.player_health}", True, self.button_color)
         self.bot_health_text = self.font.render(f"Здоровье противника:{self.bot_health}", True, self.button_color)
         self.bot_damage_text = self.font.render(f"Урон противника: {self.bot_damage}", True, self.button_color)
         self.player_damage_text = self.font.render(f"Ваш урон: {self.player_damage}", True, self.button_color)
         # self.change_text = self.font.render(f"Обменов осталось: {self.change_counter}", True, self.button_color)
-        self.window.blit(self.bot_damage_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 100)))
-        self.window.blit(self.player_damage_text, (int(self.window_width / 1.25), int(self.window_height / 1.8)))
-        self.change_player_status()
+        self.window.blit(self.bot_damage_text, (int(self.window_width / 45), int(self.window_height / 6.7)))
+        self.window.blit(self.player_damage_text, (int(self.window_width / 45), int(self.window_height / 5.7)))
+        self.window.blit(self.bot_health_text, (int(self.window_width / 45), int(self.window_height / 4.7)))
+        self.window.blit(self.player_health_text, (int(self.window_width / 45), int(self.window_height / 4.1)))
         self.window.blit(self.player_status, (int(self.window_width / 36), int(self.window_height / 1.24)))
-        self.window.blit(self.bot_health_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 200)))
-        self.window.blit(self.player_health_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 300)))
+
+        self.change_player_status()
+
         # self.window.blit(self.change_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 400)))
         self.back_button.draw(self.window)
+        self.guide_button.draw(self.window)
         for i in self.deck:
             i[1].draw(self.window)
         self.action_button.draw(self.window)
@@ -561,3 +591,6 @@ class First_mission:
             elif i.frac[0].lower() == "e":
                 result["e"] += 1
         return result
+
+ #   def guide(self):
+      #  G = Guide()

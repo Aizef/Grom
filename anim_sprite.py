@@ -26,12 +26,12 @@ def load_image(name, transparent=False):
 # Класс анимированного персонажа
 class AnimatedSprite(pygame.sprite.Sprite):
     # Функция инициализации
-    def __init__(self, sheet, columns, rows, x, y, all_sprites):
+    def __init__(self, sheet, columns, rows, x, y, all_sprites, slower):
         super().__init__(all_sprites)
         self.frames = []
+        self.slower = slower
         self.cut_sheet(sheet, columns, rows)
         self.cur_frame = 0
-        self.a = 0
         self.image = self.frames[self.cur_frame]
         self.rect = self.rect.move(x, y)
 
@@ -45,5 +45,6 @@ class AnimatedSprite(pygame.sprite.Sprite):
 
     # Функция обновления спрайта
     def update(self):
-        self.cur_frame = (self.cur_frame + 1)
-        self.image = self.frames[self.cur_frame % len(self.frames)]
+        self.cur_frame += 1
+        if self.cur_frame % self.slower == 0:
+            self.image = self.frames[self.cur_frame // self.slower]
