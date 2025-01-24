@@ -1,3 +1,4 @@
+import ctypes
 import json
 import os
 import sys
@@ -32,8 +33,10 @@ class Mission:
         self.window_height = window_height
         self.previous_object = pr
         self.grom_clock = pygame.time.Clock()
-        self.shrift_koeff = 35 * self.window_width * self.window_height // 2560 // 1600
-        self.font = pygame.font.Font('resources/other/shrift.otf', self.shrift_koeff // 2)
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
+        self.shrift_coefficient = 35 * self.window_width * self.window_height // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1)
+        self.font = pygame.font.Font('resources/other/shrift.otf', self.shrift_coefficient // 2)
         self.settings = json.load(open("resources/settings/settings.json"))
         fps_status = self.settings['fps_status']
         if fps_status == "True":
@@ -53,7 +56,7 @@ class Mission:
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
         self.change_counter = 5
-        self.font = pygame.font.Font("resources/other/shrift.otf", self.shrift_koeff // 2)
+        self.font = pygame.font.Font("resources/other/shrift.otf", self.shrift_coefficient // 2)
         self.stat_health = self.font.render("", True, self.button_color)
         self.stat_name = self.font.render("", True, self.button_color)
         self.stat_damage = self.font.render("", True, self.button_color)
@@ -70,10 +73,6 @@ class Mission:
         self.back_button = Button(self.window_width - self.window_width // 10, 0, self.window_width // 10, 100,
                                   'Сдаться', 'resources/pictures/before.png', 'resources/pictures/after.png',
                                   'resources/sound/btn_on.mp3')
-                                  
-        # self.guide_button = Button(self.window_width - self.window_width // 10, self.window_height // 5, self.window_width // 10, 100,
-        #                           'Справка', 'resources/pictures/before.png', 'resources/pictures/after.png','resources/sound/btn_on.mp3')
-
         self.deck = []
         self.putted_card = []
         self.ch = []
@@ -128,7 +127,7 @@ class Mission:
                     pygame.quit()
                     sys.exit()
 
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.back_button.is_hovered:
                         self.back()
                     for i in range(len(self.deck)):
@@ -140,15 +139,11 @@ class Mission:
                         self.member_change(self.change_counter)
                         self.change_counter = 0
                         self.player_status = self.font.render("Выложите карту", True, self.button_color)
-                        self.action_button.text = 'пас'
                         # self.action_button.text = 'Выложите карту'
                     if self.change_counter == 0:
                         self.player_status = self.font.render("Выложите карту", True, self.button_color)
                     if self.action_button.text == 'пас' and self.action_button.is_hovered:
                         self.bot_final_turn()
-
-                  #  if self.guide_button.is_hovered:
-                     #   self.guide()
 
                 for i in self.deck:
                     if i[1].is_hovered:
@@ -237,14 +232,15 @@ class Mission:
                                                                                     '',
                                                                                     f'resources/character/{temp}/image.png',
                                                                                     f'resources/character/{temp}/after.png',
-                                                                              f'resources/character/{temp}/sound.mp3')))
-        temp = self.bots_deck[self.bots_card_num + 1][0].path
-        self.next_bot_card = (Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19), int(self.window_width / 15.52),
-                                                   int(self.window_height / 6.4), '',
-                                                   f'resources/character/{temp}/image.png',
-                                                   f'resources/character/{temp}/after.png',
-                                                   f'resources/character/{temp}/sound.mp3'))
 
+                                                                                    f'resources/character/{temp}/sound.mp3')))
+        temp = self.bots_deck[self.bots_card_num + 1][0].path
+        self.next_bot_card = (Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19),
+                                                      int(self.window_width / 15.52),
+                                                      int(self.window_height / 6.4), '',
+                                                      f'resources/character/{temp}/image.png',
+                                                      f'resources/character/{temp}/after.png',
+                                                      f'resources/character/{temp}/sound.mp3'))
         self.bots_card_num += 1
         for i in self.putted_card:
             i[1].draw(self.window)
@@ -253,7 +249,7 @@ class Mission:
         pygame.display.flip()
         time.sleep(0.1)
         bots_frac = self.check_frac([i[0] for i in self.bots_putted_card])
-        font = pygame.font.SysFont("Times new roman", int(self.shrift_koeff))
+        font = pygame.font.SysFont("Times new roman", int(self.shrift_coefficient))
         if bots_frac["e"] >= 3 and "Я инженер — этим всё сказано!" not in self.used_bot_comb:
             self.player_damage = 0
             self.used_bot_comb.append("Я инженер — этим всё сказано!")
@@ -367,7 +363,6 @@ class Mission:
         self.window.blit(self.player_health_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 300)))
         # self.window.blit(self.change_text, (int(self.window_width / 1.25), int(self.window_height / 1.8 - 400)))
         self.back_button.draw(self.window)
-        # self.guide_button.draw(self.window)
         for i in self.deck:
             i[1].draw(self.window)
         self.action_button.draw(self.window)
@@ -420,8 +415,10 @@ class Mission:
                                                              f'resources/character/{temp}/image.png',
                                                              f'resources/character/{temp}/after.png',
                                                              f'resources/character/{temp}/sound.mp3')))
+            for i in self.putted_card:
+                i[1].draw(self.window)
             a = self.check_frac([i[0] for i in self.putted_card])
-            font = pygame.font.SysFont("Times new roman", int(self.shrift_koeff))
+            font = pygame.font.SysFont("Times new roman", int(self.shrift_coefficient))
             if a["e"] >= 3 and "Я инженер — этим всё сказано!" not in self.used_comb:
                 self.bot_damage = 0
                 self.used_comb.append("Я инженер — этим всё сказано!")
@@ -493,7 +490,7 @@ class Mission:
         self.stat['bots_summary_health'] += self.bot_health
         self.stat['players_summary_health'] += self.player_health
 
-        font = pygame.font.Font("resources/other/shrift.otf", self.shrift_koeff)
+        font = pygame.font.Font("resources/other/shrift.otf", self.shrift_coefficient)
         if self.player_health - self.bot_damage <= self.bot_health - self.player_damage:
             result = font.render('Вы потеряли жизнь', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
@@ -603,7 +600,7 @@ class Mission:
 
     def draw_board(self):
         pygame.draw.rect(self.window, (255, 205, 234),
-                         [int(self.window_width / 3) - 10, int(self.window_height / 2.5) - self.shrift_koeff,
+                         [int(self.window_width / 3) - 10, int(self.window_height / 2.5) - self.shrift_coefficient,
                           self.window_width // 2.2, 150],
                          width=10)
         pygame.display.flip()
