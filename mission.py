@@ -234,13 +234,16 @@ class Mission:
                                                                                     f'resources/character/{temp}/after.png',
 
                                                                                     f'resources/character/{temp}/sound.mp3')))
-        temp = self.bots_deck[self.bots_card_num + 1][0].path
-        self.next_bot_card = (Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19),
+        try:
+            temp = self.bots_deck[self.bots_card_num + 1][0].path
+            self.next_bot_card = (Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19),
                                                       int(self.window_width / 15.52),
                                                       int(self.window_height / 6.4), '',
                                                       f'resources/character/{temp}/image.png',
                                                       f'resources/character/{temp}/after.png',
                                                       f'resources/character/{temp}/sound.mp3'))
+        except IndexError:
+            pass
         self.bots_card_num += 1
         for i in self.putted_card:
             i[1].draw(self.window)
@@ -321,8 +324,8 @@ class Mission:
     def change(self, num):
         self.last_used_card = Button(
             int(self.window_width / 3.45 + len(self.deck) * self.window_width / 15.52),
-            int(self.window_height / 1.28), int(self.window_width / 15.52),
-            int(self.window_height / 6.4), '', self.deck[num][0].used_image, self.deck[num][0].used_image)
+            int(self.window_height / 1.23), int(self.window_width / 15.52),
+            int(self.window_height / 6.6), '', self.deck[num][0].used_image, self.deck[num][0].used_image)
         while True:
             temp = choice(os.listdir('resources/character'))
             if temp not in self.ch:
@@ -339,7 +342,7 @@ class Mission:
 
     def redrawing(self):
         self.window.blit(self.background_image, (0, 0))
-        if self.bots_hearts == 1 and self.bots_health[0].cur_frame < 2:
+        if self.bots_hearts == 1 and self.bots_health[0].cur_frame < 20:
             self.bots_health[0].update()
         if self.player_hearts == 1 and self.players_health[0].cur_frame < 20:
             self.players_health[0].update()
