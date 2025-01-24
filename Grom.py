@@ -92,7 +92,7 @@ class Grom:
                     running = False
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if self.go_to_desktop_btn.is_hovered:  # если нажата кнопка выйти из игры
                         pygame.quit()
                         sys.exit()

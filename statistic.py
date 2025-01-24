@@ -16,13 +16,14 @@ class Statistic_window:
         self.button_color = (255, 205, 234)
 
         self.button_text_color = (0, 0, 0)
+        self.shrift_koeff = 35 * self.window_width * self.window_height // 2560 // 1600
         self.settings = json.load(open("resources/settings/settings.json"))
         if self.settings['fullscreen_status'] == 'True':
             self.window = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
             self.window = pygame.display.set_mode((self.window_width, self.window_height))
         if comp:
-            self.font = pygame.font.Font('resources/other/shrift.otf', 40)
+            self.font = pygame.font.Font('resources/other/shrift.otf', self.shrift_koeff)
             self.background_image = pygame.image.load("resources/pictures/mis_compl.png").convert_alpha()
             self.background_image = pygame.transform.scale(self.background_image,
                                                            (self.window_width, self.window_height))
@@ -30,28 +31,22 @@ class Statistic_window:
             self.background_image = pygame.image.load("resources/pictures/mis_f.png").convert_alpha()
             self.background_image = pygame.transform.scale(self.background_image,
                                                            (self.window_width, self.window_height))
-            self.font = pygame.font.Font('resources/other/shrift.otf', 40)
+            self.font = pygame.font.Font('resources/other/shrift.otf', self.shrift_koeff)
         pygame.display.set_caption("Финальное окно")
         self.previous_screen = screen
         self.previous_screen.blit(self.window, (0, 0))
-        self.player_damage = self.font.render(f"Суммарный урон игрока: {stat['players_summary_damage']}", True,
-                                              self.button_color)
-        self.player_card = self.font.render(f"Сыгранные игроком карты: {stat['players_putted_car']}", True,
-                                            self.button_color)
-        self.player_health = self.font.render(f"Суммарное здоровье игрока: {stat['players_summary_health']}", True,
-                                              self.button_color)
-        self.bots_damage = self.font.render(f"Суммарный урон бота: {stat['bots_summary_damage']}", True,
-                                            self.button_color)
-        self.bots_health = self.font.render(f"Суммарное здоровье бота: {stat['bots_summary_health']}", True,
-                                            self.button_color)
-        self.bots_cards = self.font.render(f"Сыгранные ботом карты: {stat['bots_putted_card']}", True,
-                                           self.button_color)
+        self.player_damage = self.font.render(f"Суммарный урон игрока: {stat['players_summary_damage']}", True, self.button_color)
+        self.player_card = self.font.render(f"Сыгранные игроком карты: {stat['players_putted_car']}", True, self.button_color)
+        self.player_health = self.font.render(f"Суммарное здоровье игрока: {stat['players_summary_health']}", True, self.button_color)
+        self.bots_damage = self.font.render(f"Суммарный урон бота: {stat['bots_summary_damage']}", True, self.button_color)
+        self.bots_health = self.font.render(f"Суммарное здоровье бота: {stat['bots_summary_health']}", True, self.button_color)
+        self.bots_cards = self.font.render(f"Сыгранные ботом карты: {stat['bots_putted_card']}", True, self.button_color)
         self.text = self.font.render("Подсчет результатов:", True, self.button_color)
         self.ret_btn = Button(int(self.window_width - self.window_width // 10 - 120), 0,
                               int(self.window_width // 10 + 110), 100, 'Вернуться к миссиям',
-                              'resources/pictures/after1.png',
-                              'resources/pictures/after.png',
-                              'resources/sound/start.mp3')
+                                        'resources/pictures/after1.png',
+                                        'resources/pictures/after.png',
+                                        'resources/sound/start.mp3')
         self.ret_btn.draw(self.window)
         pygame.display.flip()
 
@@ -64,7 +59,7 @@ class Statistic_window:
                     running = False
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if self.ret_btn.is_hovered:
                         self.back()
             self.window.blit(self.background_image, (0, 0))

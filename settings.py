@@ -76,7 +76,7 @@ class Settings:
                     running = False
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                     if self.screen_plus.is_hovered:
                         self.temp_screen = int(self.temp_screen) + 1
                         if int(self.temp_screen) == len(self.screen_list):
@@ -171,8 +171,8 @@ class Settings:
                 self.verification = False
             else:
                 self.verification = True
-            self.redrawing()
             self.clock.tick(90)
+            self.redrawing()
             pygame.display.flip()
 
     def redrawing(self, full=False):
@@ -327,8 +327,7 @@ class Settings:
         self.open()
 
     def back(self):  # возврат
-        pygame.display.set_caption("Grom: Essense of Chaos")
-        print(self.screen_size)
+        pygame.display.set_caption("Grom")
         self.back_object.reopen(self.screen_size[0], self.screen_size[1])
 
     def get(self, name):
