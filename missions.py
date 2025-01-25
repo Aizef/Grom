@@ -1,3 +1,4 @@
+import ctypes
 import json
 import sys
 import pygame
@@ -14,7 +15,8 @@ class Missions:
 
         self.window_width = window_width
         self.window_height = window_height
-        self.shrift_koeff = 35 * self.window_width * self.window_height // 2560 // 1600
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
         #  рисуем окно настроек
         if json.load(open('resources/settings/settings.json'))['fullscreen_status'] == 'True':
             self.window = pygame.display.set_mode((0, 0), FULLSCREEN)
@@ -28,7 +30,7 @@ class Missions:
         self.button_text_color = (0, 0, 0)
         self.grom_clock = pygame.time.Clock()
 
-        self.font = pygame.font.Font("resources/other/shrift.otf", self.shrift_koeff)
+        self.font = pygame.font.Font("resources/other/shrift.otf", 35 * self.window_width * self.window_height  // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1))
 
         if self.get_fps_result() == "True":
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (255, 205, 234))

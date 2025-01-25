@@ -1,3 +1,4 @@
+import ctypes
 import json
 import sys
 from ctypes import cast
@@ -17,7 +18,9 @@ class Grom:
     def __init__(self, width, height):
         pygame.init()
         pygame.font.init()
-        self.font = pygame.font.Font('resources/other/shrift.otf', 18)
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
+        self.font = pygame.font.Font('resources/other/shrift.otf', 35 * width * height // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1))
         pygame.mixer.music.load("resources/sound/main_theme.mp3")
         pygame.mixer.music.play(-1)
         self.width = width
