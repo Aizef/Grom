@@ -8,6 +8,7 @@ import pygame
 from pygame import FULLSCREEN
 import time
 
+from Card import Card
 from anim_sprite import AnimatedSprite, load_image
 from buttons import Button
 from character import Character
@@ -22,12 +23,14 @@ class Mission:
         self.bi = bi_path
         pygame.display.set_caption(f'Миссия под номером: {n}')
         self.all_sprites = pygame.sprite.Group()
-        self.bots_health = [
-            AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2, window_height // 3.85,
-                           self.all_sprites, 10)]
-        self.players_health = [
-            AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2, window_height // 1.54,
-                           self.all_sprites, 10)]
+        self.bots_health = AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2,
+                                          window_height // 3.85,
+                                          self.all_sprites, 10)
+        self.players_health = AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2,
+                                             window_height // 1.54,
+                                             self.all_sprites, 10)
+
+        self.explosion = None
 
         self.window_width = window_width
         self.window_height = window_height
@@ -35,7 +38,8 @@ class Mission:
         self.grom_clock = pygame.time.Clock()
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
-        self.shrift_coefficient = 35 * self.window_width * self.window_height // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1)
+        self.shrift_coefficient = 35 * self.window_width * self.window_height // user32.GetSystemMetrics(
+            0) // user32.GetSystemMetrics(1)
         self.font = pygame.font.Font('resources/other/shrift.otf', self.shrift_coefficient // 2)
         self.settings = json.load(open("resources/settings/settings.json"))
         fps_status = self.settings['fps_status']
@@ -81,12 +85,12 @@ class Mission:
             temp = choice(os.listdir('resources/character'))
             if temp not in self.ch:
                 self.ch.append(temp)
-                self.deck.append((Character(temp),
-                                  Button(int(self.window_width / 3.52 + len(self.deck) * self.window_width / 15.52),
-                                         int(self.window_height / 1.21), int(self.window_width / 15.52),
-                                         int(self.window_height / 6.4), '', f'resources/character/{temp}/image.png',
-                                         f'resources/character/{temp}/after.png',
-                                         f'resources/character/{temp}/sound.mp3')))
+                self.deck.append(Card(Character(temp),
+                                      Button(int(self.window_width / 3.52 + len(self.deck) * self.window_width / 15.52),
+                                             int(self.window_height / 1.21), int(self.window_width / 15.52),
+                                             int(self.window_height / 6.4), '', f'resources/character/{temp}/image.png',
+                                             f'resources/character/{temp}/after.png',
+                                             f'resources/character/{temp}/sound.mp3')))
             if len(self.deck) == 8:
                 break
         self.turn = True
@@ -111,11 +115,12 @@ class Mission:
         self.stat = {'bots_putted_card': 0, 'players_putted_car': 0, 'bots_summary_damage': 0,
                      'players_summary_damage': 0, 'bots_summary_health': 0, 'players_summary_health': 0}
         temp = self.bots_deck[0][0].path
-        self.next_bot_card = (Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19), int(self.window_width / 15.52),
-                                                   int(self.window_height / 6.4), '',
-                                                   f'resources/character/{temp}/image.png',
-                                                   f'resources/character/{temp}/after.png',
-                                                   f'resources/character/{temp}/sound.mp3'))
+        self.next_bot_card = Card(Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19),
+                                                          int(self.window_width / 15.52),
+                                                          int(self.window_height / 6.4), '',
+                                                          f'resources/character/{temp}/image.png',
+                                                          f'resources/character/{temp}/after.png',
+                                                          f'resources/character/{temp}/sound.mp3'))
 
     def open(self):
         running = True
@@ -156,11 +161,13 @@ class Mission:
                         self.stat_frac = self.font.render(f"Фракция: {i[0].frac}", True, self.button_color)
                 if self.next_bot_card[1].is_hovered:
                     self.stat_name = self.font.render(f"Имя: {self.next_bot_card[0].name}", True, self.button_color)
-                    self.stat_health = self.font.render(f"Здоровье: {self.next_bot_card[0].health}", True, self.button_color)
+                    self.stat_health = self.font.render(f"Здоровье: {self.next_bot_card[0].health}", True,
+                                                        self.button_color)
                     self.stat_image = Button(int(self.window_width / 15), int(self.window_height / 2.3),
                                              int(self.window_width / 15.52), int(self.window_height / 6.4), '',
                                              f'resources/character/{self.next_bot_card[0].path}/image.png')
-                    self.stat_damage = self.font.render(f"Урон: {self.next_bot_card[0].damage}", True, self.button_color)
+                    self.stat_damage = self.font.render(f"Урон: {self.next_bot_card[0].damage}", True,
+                                                        self.button_color)
                     self.stat_frac = self.font.render(f"Фракция: {self.next_bot_card[0].frac}", True, self.button_color)
 
             self.grom_clock.tick(90)
@@ -218,30 +225,36 @@ class Mission:
 
         self.bot_health += int(self.bots_deck[self.bots_card_num][0].health)
         self.bot_damage += int(self.bots_deck[self.bots_card_num][0].damage)
-        self.bots_deck[self.bots_card_num] = (
-            (Character(temp, True),
-             Button(int(self.window_width / 3.52 + self.bots_card_num * self.window_width / 15.52),
-                    int(self.window_height / 1.21), int(self.window_width / 15.52),
-                    int(self.window_height / 6.4), '',
-                    f'resources/character/{temp}/used.png',
-                    f'resources/character/{temp}/used.png')))
 
-        self.bots_putted_card.append((self.bots_deck[self.bots_card_num][0], Button(card_x, card_y,
-                                                                                    int(self.window_width / 15.52),
-                                                                                    int(self.window_height / 8.4),
-                                                                                    '',
-                                                                                    f'resources/character/{temp}/image.png',
-                                                                                    f'resources/character/{temp}/after.png',
+        if self.bots_deck[self.bots_card_num][0].name == 'Казнь':
+            self.card_to_kill()
 
-                                                                                    f'resources/character/{temp}/sound.mp3')))
+        self.bots_deck[self.bots_card_num] = (Card
+                                              (Character(temp, True),
+                                               Button(
+                                                   int(self.window_width / 3.52 + self.bots_card_num * self.window_width / 15.52),
+                                                   int(self.window_height / 1.21), int(self.window_width / 15.52),
+                                                   int(self.window_height / 6.4), '',
+                                                   f'resources/character/{temp}/used.png',
+                                                   f'resources/character/{temp}/used.png')))
+
+        self.bots_putted_card.append(Card(self.bots_deck[self.bots_card_num][0], Button(card_x, card_y,
+                                                                                        int(self.window_width / 15.52),
+                                                                                        int(self.window_height / 8.4),
+                                                                                        '',
+                                                                                        f'resources/character/{temp}/image.png',
+                                                                                        f'resources/character/{temp}/after.png',
+
+                                                                                        f'resources/character/{temp}/sound.mp3')))
         try:
             temp = self.bots_deck[self.bots_card_num + 1][0].path
-            self.next_bot_card = (Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19),
-                                                      int(self.window_width / 15.52),
-                                                      int(self.window_height / 6.4), '',
-                                                      f'resources/character/{temp}/image.png',
-                                                      f'resources/character/{temp}/after.png',
-                                                      f'resources/character/{temp}/sound.mp3'))
+            self.next_bot_card = Card(Character(temp),
+                                      Button(int(self.window_width / 1.25), int(self.window_height / 19),
+                                             int(self.window_width / 15.52),
+                                             int(self.window_height / 6.4), '',
+                                             f'resources/character/{temp}/image.png',
+                                             f'resources/character/{temp}/after.png',
+                                             f'resources/character/{temp}/sound.mp3'))
         except IndexError:
             pass
         self.bots_card_num += 1
@@ -330,24 +343,19 @@ class Mission:
             temp = choice(os.listdir('resources/character'))
             if temp not in self.ch:
                 self.ch[num] = temp
-                self.deck[num] = ((Character(temp),
-                                   Button(int(self.window_width / 3.52 + num * self.window_width / 15.52),
-                                          int(self.window_height / 1.21), int(self.window_width / 15.52),
-                                          int(self.window_height / 6.4), '', f'resources/character/{temp}/image.png',
-                                          f'resources/character/{temp}/after.png',
-                                          f'resources/character/{temp}/sound.mp3')))
+                self.deck[num] = (Card(Character(temp),
+                                       Button(int(self.window_width / 3.52 + num * self.window_width / 15.52),
+                                              int(self.window_height / 1.21), int(self.window_width / 15.52),
+                                              int(self.window_height / 6.4), '',
+                                              f'resources/character/{temp}/image.png',
+                                              f'resources/character/{temp}/after.png',
+                                              f'resources/character/{temp}/sound.mp3')))
                 break
         self.change_counter -= 1
         self.redrawing()
 
     def redrawing(self):
         self.window.blit(self.background_image, (0, 0))
-        if self.bots_hearts == 1 and self.bots_health[0].cur_frame < 20:
-            self.bots_health[0].update()
-        if self.player_hearts == 1 and self.players_health[0].cur_frame < 20:
-            self.players_health[0].update()
-        self.all_sprites.draw(self.window)
-
         self.window.blit(self.stat_name, (int(self.window_width / 7.5), int(self.window_height / 2.3)))
         self.window.blit(self.stat_health, (int(self.window_width / 7.5), int(self.window_height / 2.2)))
         self.window.blit(self.stat_damage, (int(self.window_width / 7.5), int(self.window_height / 2.1)))
@@ -383,7 +391,31 @@ class Mission:
         if self.bots_putted_card:
             for i in self.bots_putted_card:
                 i[1].draw(self.window)
+
+        if self.bots_hearts == 1 and self.bots_health.cur_frame < 20:
+            self.bots_health.update()
+
+        if self.player_hearts == 1 and self.players_health.cur_frame < 20:
+            self.players_health.update()
+
+        if self.bots_hearts == 0 and self.bots_health.cur_frame < 50:
+            self.bots_health.update()
+
+        if self.player_hearts == 0 and self.players_health.cur_frame < 50:
+            self.players_health.update()
+
+        if self.explosion != None and self.explosion.cur_frame < self.explosion.slower * self.explosion.columns:
+            self.explosion.update()
+
+        if self.explosion != None and self.explosion.cur_frame == self.explosion.slower * self.explosion.columns - 1:
+            self.explosion.kill()
+            self.explosion = None
+
+        self.all_sprites.draw(self.window)
         pygame.display.flip()
+
+        if self.players_health.cur_frame == self.players_health.slower * self.players_health.columns - 1 or self.bots_health.cur_frame == self.bots_health.slower * self.bots_health.columns - 1:
+            self.finish()
 
     def put_card(self, i):
         if self.deck[i][0].used is False:
@@ -404,22 +436,25 @@ class Mission:
 
             self.player_damage += int(Character(temp).damage)
             self.player_health += int(Character(temp).health)
-            self.deck[i] = (
-                (Character(temp, True), Button(int(self.window_width / 3.52 + i * self.window_width / 15.52),
-                                               int(self.window_height / 1.19), int(self.window_width / 15.52),
-                                               int(self.window_height / 6.4), '',
-                                               f'resources/character/{temp}/used.png',
-                                               f'resources/character/{temp}/used.png')))
+            self.deck[i] = (Card
+                            (Character(temp, True),
+                             Button(int(self.window_width / 3.52 + i * self.window_width / 15.52),
+                                    int(self.window_height / 1.19), int(self.window_width / 15.52),
+                                    int(self.window_height / 6.4), '',
+                                    f'resources/character/{temp}/used.png',
+                                    f'resources/character/{temp}/used.png')))
 
-            self.putted_card.append((self.deck[i][0], Button(card_x, card_y,
-                                                             int(self.window_width / 15.52),
-                                                             int(self.window_height / 8.4),
-                                                             '',
-                                                             f'resources/character/{temp}/image.png',
-                                                             f'resources/character/{temp}/after.png',
-                                                             f'resources/character/{temp}/sound.mp3')))
-            for i in self.putted_card:
-                i[1].draw(self.window)
+            self.putted_card.append(Card(self.deck[i][0], Button(card_x, card_y,
+                                                                 int(self.window_width / 15.52),
+                                                                 int(self.window_height / 8.4),
+                                                                 '',
+                                                                 f'resources/character/{temp}/image.png',
+                                                                 f'resources/character/{temp}/after.png',
+                                                                 f'resources/character/{temp}/sound.mp3')))
+
+            if self.deck[i][0].name == 'Казнь':
+                self.card_to_kill()
+
             a = self.check_frac([i[0] for i in self.putted_card])
             font = pygame.font.SysFont("Times new roman", int(self.shrift_coefficient))
             if a["e"] >= 3 and "Я инженер — этим всё сказано!" not in self.used_comb:
@@ -487,6 +522,32 @@ class Mission:
             self.stat['players_putted_car'] += 1
             self.bot_turn()
 
+    def card_to_kill(self):
+        maxik = 0
+        for i in self.putted_card:
+            if maxik < int(i[0].health) + int(i[0].damage):
+                maxik = max(maxik, int(i[0].health) + int(i[0].damage))
+                max_card = (i, 'p')
+        for i in self.bots_putted_card:
+            if maxik < int(i[0].health) + int(i[0].damage):
+                maxik = max(maxik, int(i[0].health) + int(i[0].damage))
+                max_card = (i, 'b')
+
+        max_card[0][1].image = pygame.transform.scale(pygame.image.load(max_card[0][0].used_image), (
+            int(self.window_width / 15.52),
+            int(self.window_height / 8.4)))
+
+        if max_card[1] == 'b':
+            self.bot_health -= int(max_card[0][0].health)
+            self.bot_damage -= int(max_card[0][0].damage)
+        else:
+            self.player_health -= int(max_card[0][0].health)
+            self.player_damage -= int(max_card[0][0].damage)
+
+        self.explosion = AnimatedSprite(load_image('explosion.png', True), 5, 1, max_card[0][1].x,
+                                        max_card[0][1].y,
+                                        self.all_sprites, 6)
+
     def over(self):
         self.stat['bots_summary_damage'] += self.bot_damage
         self.stat['players_summary_damage'] += self.player_damage
@@ -512,13 +573,11 @@ class Mission:
             result = font.render('Вы проиграли', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
             time.sleep(0.5)
-            self.finish()
         elif self.bots_hearts == 0:
             self.comp = True
             result = font.render('Вы Выиграли', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
             time.sleep(0.5)
-            self.finish()
 
         enemy = Enemy(self.window_width, self.window_height)
         enemy.fill_opponents_deck(self.dif)

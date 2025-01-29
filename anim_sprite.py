@@ -31,6 +31,7 @@ class AnimatedSprite(pygame.sprite.Sprite):
         self.frames = []
         self.slower = slower
         self.cut_sheet(sheet, columns, rows)
+        self.columns = columns
         self.cur_frame = 0
         self.image = self.frames[self.cur_frame]
         self.rect = self.rect.move(x, y)
