@@ -60,15 +60,15 @@ class Missions:
         self.comb5_image = pygame.image.load("resources/pictures/c5.png")
 
         self.comb1_image = pygame.transform.scale(self.comb1_image,
-                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+                                                  (493 * self.window_width // 2560, 195 * self.window_height // 1600))
         self.comb2_image = pygame.transform.scale(self.comb2_image,
-                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+                                                  (493 * self.window_width // 2560, 185 * self.window_height // 1600))
         self.comb3_image = pygame.transform.scale(self.comb3_image,
-                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+                                                  (493 * self.window_width // 2560, 185 * self.window_height // 1600))
         self.comb4_image = pygame.transform.scale(self.comb4_image,
-                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+                                                  (493 * self.window_width // 2560, 185 * self.window_height // 1600))
         self.comb5_image = pygame.transform.scale(self.comb5_image,
-                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+                                                  (493 * self.window_width // 2560, 185 * self.window_height // 1600))
 
         self.comb1 = self.comb1_image.get_rect(topleft=(int(self.window_height / 18), int(self.window_height / 7.2)))
         self.comb2 = self.comb2_image.get_rect(topleft=(int(self.window_height / 18), int(self.window_height / 3.5)))

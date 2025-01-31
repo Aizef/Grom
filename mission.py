@@ -47,9 +47,9 @@ class Mission:
         self.grom_clock = pygame.time.Clock()
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
-        self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",
-                                     20 * self.window_width * self.window_height // user32.GetSystemMetrics(
-                                         0) // user32.GetSystemMetrics(1))
+        self.shrift_coefficient = 35 * self.window_width * self.window_height // user32.GetSystemMetrics(
+            0) // user32.GetSystemMetrics(1)
+        self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",  self.shrift_coefficient)
         self.settings = json.load(open("resources/settings/settings.json"))
         fps_status = self.settings['fps_status']
         if fps_status == "True":
@@ -69,6 +69,7 @@ class Mission:
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
         self.change_counter = 5
+        self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf", self.shrift_coefficient // 2)
         self.stat_health = self.font.render("", True, self.button_color)
         self.stat_name = self.font.render("", True, self.button_color)
         self.stat_damage = self.font.render("", True, self.button_color)
