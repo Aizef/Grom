@@ -14,7 +14,6 @@ class Enemy:
         self.window_height = window_height
         self.putted_amount = 0
 
-    # Игра заканчивается, если у игрока закончились карты, для бота это не работает
     def fill_opponents_deck(self, dif):
         if dif == "Щадящий":
             counter = 0
