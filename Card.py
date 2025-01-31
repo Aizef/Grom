@@ -1,4 +1,4 @@
-class Card():
+class Card:
     def __init__(self, character, button):
         self.button, self.character = button, character
 

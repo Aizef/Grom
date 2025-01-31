@@ -1,4 +1,3 @@
-import ctypes
 import json
 import sys
 from ctypes import cast
@@ -18,13 +17,12 @@ class Grom:
     def __init__(self, width, height):
         pygame.init()
         pygame.font.init()
-        user32 = ctypes.windll.user32
-        user32.SetProcessDPIAware()
-        self.font = pygame.font.Font('resources/other/shrift.otf', 35 * width * height // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1))
         pygame.mixer.music.load("resources/sound/main_theme.mp3")
         pygame.mixer.music.play(-1)
         self.width = width
         self.height = height
+        self.k = 250 * self.width * self.height // 2560 // 1600
+        self.font = pygame.font.Font('resources/other/shrift.otf', 250 * self.width * self.height // 2560 // 1600)
         self.settings = json.load(open('resources/settings/settings.json'))
 
         if self.settings['fullscreen_status'] == 'True':
@@ -61,8 +59,9 @@ class Grom:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (255, 205, 234))
         else:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
-
+        self.grom_text = self.font.render("GROM", True, (255, 205, 234))
         self.screen.blit(self.grom_text_show_fps, (0, 0))
+
 
     def reopen(self, a, s):
         self.width, self.height = a, s
@@ -95,7 +94,7 @@ class Grom:
                     running = False
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.go_to_desktop_btn.is_hovered:  # если нажата кнопка выйти из игры
                         pygame.quit()
                         sys.exit()
@@ -111,6 +110,8 @@ class Grom:
                 self.go_to_mission_btn.handle_event(event)
                 self.go_to_settings_btn.handle_event(event)
                 self.go_to_desktop_btn.handle_event(event)
+
+            self.screen.blit(self.grom_text, (int(self.width / 4) + int(self.width / 18), self.height // 12))
 
             self.go_to_mission_btn.check_hover(pygame.mouse.get_pos())
             self.go_to_mission_btn.draw(self.screen)
@@ -134,3 +135,6 @@ class Grom:
 
     def get_fps_result(self):
         return self.settings['fps_status']
+
+    def get_k(self):
+        return self.k

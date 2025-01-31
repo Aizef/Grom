@@ -50,9 +50,7 @@ class Settings:
         pygame.display.set_caption("Настройки")
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
-        user32 = ctypes.windll.user32
-        user32.SetProcessDPIAware()
-        self.font = pygame.font.Font("resources/other/shrift.otf", 30 * self.window_width * self.window_height  // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1))
+        self.font = pygame.font.Font("resources/other/shrift.otf", 16)
 
         #  создание надписей
         self.text_complexity = self.font.render("Сбросить настройки", True, self.button_color)
@@ -78,7 +76,7 @@ class Settings:
                     running = False
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.screen_plus.is_hovered:
                         self.temp_screen = int(self.temp_screen) + 1
                         if int(self.temp_screen) == len(self.screen_list):

@@ -1,4 +1,4 @@
-name:Снайпер:str
+name:Стрелок-любитель:str
 health:45:int
 cost:70:int
 experience:70:int
