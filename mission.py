@@ -337,13 +337,20 @@ class Mission:
 
         self.turn = True
         self.action_button.text = 'пас'
-        if self.bots_card_num == len(self.bots_deck):
-            self.over()
+        if self.bots_card_num == len(self.bots_deck) - 1:
+            font = pygame.font.Font("resources/other/shrift.otf", self.shrift_coefficient)
+            result = font.render('Противник проиграл из-за недостатка карт', True, self.button_color)
+            self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
+            pygame.display.flip()
+            time.sleep(1)
+            self.bots_hearts = 0
+            self.comp = True
+            self.open()
 
     def change(self, num):
         while True:
             temp = choice(os.listdir('resources/character'))
-            if temp not in self.ch:
+            if temp not in self.ch and temp != 'question':
                 self.ch[num] = temp
                 self.deck[num] = (Card(Character(temp),
                                        Button(int(self.window_width / 4.22 + num * self.window_width / 15.52),
@@ -574,7 +581,6 @@ class Mission:
         self.bot_health += int(spy[0].health)
         self.bot_damage += int(spy[0].damage)
 
-        self.bots_card_num += 1
         for i in self.putted_card:
             i[1].draw(self.window)
         time.sleep(0.3)
@@ -629,25 +635,25 @@ class Mission:
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
             self.player_hearts -= 1
             pygame.display.flip()
-            time.sleep(0.5)
+            time.sleep(0.7)
         else:
             result = font.render('Противник потерял жизнь', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
             self.bots_hearts -= 1
             pygame.display.flip()
-            time.sleep(0.5)
+            time.sleep(0.7)
 
         if self.player_hearts == 0:
             self.comp = False
             result = font.render('Вы проиграли', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
-            time.sleep(0.5)
+            time.sleep(0.7)
 
         elif self.bots_hearts == 0:
             self.comp = True
             result = font.render('Вы Выиграли', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
-            time.sleep(0.5)
+            time.sleep(0.7)
 
         try:
             if self.change_counter != 0 or self.change_counter != 5:
@@ -665,7 +671,7 @@ class Mission:
             k = 3 * len(self.putted_spy)
             while True:
                 temp = choice(os.listdir('resources/character'))
-                if temp not in self.ch:
+                if temp not in self.ch and temp != 'question':
                     self.ch.append(temp)
                     self.new_deck.append((Character(temp),
                                           Button(int(0),
@@ -689,9 +695,10 @@ class Mission:
                                                                    self.button_color)
         self.redrawing()
         if len(self.new_deck) == 0 and self.bots_hearts != 0:
-            result = font.render('Вы проиграли', True, self.button_color)
+            result = font.render('Вы проиграли из-за недостатка карт', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
-            time.sleep(0.3)
+            pygame.display.flip()
+            time.sleep(1)
             self.player_hearts = 0
             self.comp = False
             self.open()
@@ -719,7 +726,6 @@ class Mission:
         self.used_bot_comb = []
         self.putted_spy = []
 
-        self.bots_card_num = 0
         self.player_rows = [0, 0, 0]
         self.bot_rows = [0, 0, 0]
         self.player_damage = 0

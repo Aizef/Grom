@@ -17,13 +17,12 @@ class Enemy:
     def fill_opponents_deck(self, dif):
         if dif == "Щадящий":
             counter = 0
-            while counter != 10:
+            while counter != 15:
                 temp = random.choice(os.listdir('resources/character'))
                 if (temp not in self.enemy_ch and Character(temp).frac[0] == "m" or Character(temp).frac[0] == "s" and
                         Character(temp).name.lower() != "бастион" and Character(
                             temp).name.lower() != "штурмовик" and Character(temp).name.lower() != "снайпер") and temp != 'question':
                     self.enemy_ch.append(temp)
-                    print(temp)
                     self.enemy_deck.append(Card(Character(temp),
                                                 Button(int(self.window_width / 2 + len(
                                                     self.enemy_deck) * self.window_width / 15.52),
