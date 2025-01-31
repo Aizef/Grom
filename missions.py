@@ -42,14 +42,14 @@ class Missions:
         self.comb4_text = self.font.render("Искалеченная плоть, искалеченная душа. = Дает 100 едениц здоровья", True,
                                            (255, 205, 234))
         self.comb5_text = self.font.render("Человек хуже мутанта, когда он мутант. = Дает 200 едениц здоровья", True,
-(255, 205, 234))
+                                           (255, 205, 234))
 
         self.font = pygame.font.SysFont("Times New roman", int(self.shrift_koeff * 1.2))
 
         self.ben_comb1_text = self.font.render("+ 100 едениц урона", True, (255, 205, 234))
         self.ben_comb2_text = self.font.render("+ 200 едениц урона", True, (255, 205, 234))
         self.ben_comb3_text = self.font.render("Урон противника уменьшен до 0", True, (255, 205, 234))
-        self.ben_comb4_text = self.font.render("+100 едениц здоровья", True,(255, 205, 234))
+        self.ben_comb4_text = self.font.render("+100 едениц здоровья", True, (255, 205, 234))
         self.ben_comb5_text = self.font.render("+200 едениц здоровья", True, (255, 205, 234))
 
         self.comb1_image = pygame.image.load("resources/pictures/c1.png")
@@ -57,6 +57,17 @@ class Missions:
         self.comb3_image = pygame.image.load("resources/pictures/c3.png")
         self.comb4_image = pygame.image.load("resources/pictures/c4.png")
         self.comb5_image = pygame.image.load("resources/pictures/c5.png")
+
+        self.comb1_image = pygame.transform.scale(self.comb1_image,
+                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+        self.comb2_image = pygame.transform.scale(self.comb2_image,
+                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+        self.comb3_image = pygame.transform.scale(self.comb3_image,
+                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+        self.comb4_image = pygame.transform.scale(self.comb4_image,
+                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
+        self.comb5_image = pygame.transform.scale(self.comb5_image,
+                                                  (493 * self.window_width // 2560, 208 * self.window_height // 1600))
 
         self.comb1 = self.comb1_image.get_rect(topleft=(int(self.window_height / 18), int(self.window_height / 7.2)))
         self.comb2 = self.comb2_image.get_rect(topleft=(int(self.window_height / 18), int(self.window_height / 3.5)))

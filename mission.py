@@ -21,6 +21,15 @@ class Mission:
         pygame.init()
         self.dif = dif
         self.bi = bi_path
+        if self.dif.lower() == "щадящий":
+            pygame.mixer.music.load("resources/sound/first_mis.mp3")
+            pygame.mixer.music.play(-1)
+        elif self.dif.lower() == "ветеран":
+            pygame.mixer.music.load("resources/sound/sec_mis.mp3")
+            pygame.mixer.music.play(-1)
+        elif self.dif.lower() == "ангел смерти":
+            pygame.mixer.music.load("resources/sound/third_mis.mp3")
+            pygame.mixer.music.play(-1)
         pygame.display.set_caption(f'Миссия под номером: {n}')
         self.all_sprites = pygame.sprite.Group()
         self.bots_health = AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2,
@@ -198,143 +207,150 @@ class Mission:
         self.previous_object.open(True)
 
     def bot_final_turn(self):
-        while (self.player_health - self.bot_damage > self.bot_health - self.player_damage) or self.stat[
-            'bots_putted_card'] == 15:
-            self.bot_turn()
-            if self.bots_putted_card:
-                for i in self.bots_putted_card:
-                    i[1].draw(self.window)
-            pygame.display.flip()
-            self.turn = False
-        if self.player_health - self.bot_damage <= self.bot_health - self.player_damage:
-            time.sleep(0.4)
+        if len(self.bots_deck) != len(self.bots_putted_card) and len(self.bots_putted_card) != 0 and len(
+                self.putted_card) < len(self.bots_putted_card):
+            while (self.player_health - self.bot_damage > self.bot_health - self.player_damage) or self.stat[
+                'bots_putted_card'] == 15:
+                self.bot_turn()
+                if self.bots_putted_card:
+                    for i in self.bots_putted_card:
+                        i[1].draw(self.window)
+                pygame.display.flip()
+                self.turn = False
+            if self.player_health - self.bot_damage <= self.bot_health - self.player_damage:
+                time.sleep(0.4)
+                self.over()
+        else:
             self.over()
 
     def bot_turn(self):
-        temp = self.bots_deck[self.bots_card_num][0].path
-        self.stat['bots_putted_card'] += 1
-
-        if self.bots_deck[self.bots_card_num][0].frac[0] == "s":  # первый ряд
-            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[0]
-            card_y = int(self.window_height / 3.73)
-            self.bot_rows[0] += 1
-
-        elif self.bots_deck[self.bots_card_num][0].frac[0] == "m":  # второй ряд
-            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[1]
-            card_y = int(self.window_height / 7)
-            self.bot_rows[1] += 1
-
-        else:  # третий ряд
-            card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[2]
-            card_y = int(0)
-            self.bot_rows[2] += 1
-
-        self.bot_health += int(self.bots_deck[self.bots_card_num][0].health)
-        self.bot_damage += int(self.bots_deck[self.bots_card_num][0].damage)
-
-        if self.bots_deck[self.bots_card_num][0].name == 'Казнь':
-            self.card_to_kill()
-
-        self.bots_deck[self.bots_card_num] = (Card
-                                              (Character(temp, True),
-                                               Button(
-                                                   int(self.window_width / 3.52 + self.bots_card_num * self.window_width / 15.52),
-                                                   int(self.window_height / 1.21), int(self.window_width / 15.52),
-                                                   int(self.window_height / 6.4), '',
-                                                   f'resources/character/{temp}/used.png',
-                                                   f'resources/character/{temp}/used.png')))
-
-        self.bots_putted_card.append(Card(self.bots_deck[self.bots_card_num][0], Button(card_x, card_y,
-                                                                                        int(self.window_width / 15.52),
-                                                                                        int(self.window_height / 8.4),
-                                                                                        '',
-                                                                                        f'resources/character/{temp}/image.png',
-                                                                                        f'resources/character/{temp}/after.png',
-
-                                                                                        f'resources/character/{temp}/sound.mp3')))
         try:
-            temp = self.bots_deck[self.bots_card_num + 1][0].path
-            self.next_bot_card = Card(Character(temp),
-                                      Button(int(self.window_width / 1.25), int(self.window_height / 19),
-                                             int(self.window_width / 15.52),
-                                             int(self.window_height / 6.4), '',
-                                             f'resources/character/{temp}/image.png',
-                                             f'resources/character/{temp}/after.png',
-                                             f'resources/character/{temp}/sound.mp3'))
+            temp = self.bots_deck[self.bots_card_num][0].path
+            self.stat['bots_putted_card'] += 1
+
+            if self.bots_deck[self.bots_card_num][0].frac[0] == "s":  # первый ряд
+                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[0]
+                card_y = int(self.window_height / 3.73)
+                self.bot_rows[0] += 1
+
+            elif self.bots_deck[self.bots_card_num][0].frac[0] == "m":  # второй ряд
+                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[1]
+                card_y = int(self.window_height / 7)
+                self.bot_rows[1] += 1
+
+            else:  # третий ряд
+                card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[2]
+                card_y = int(0)
+                self.bot_rows[2] += 1
+
+            self.bot_health += int(self.bots_deck[self.bots_card_num][0].health)
+            self.bot_damage += int(self.bots_deck[self.bots_card_num][0].damage)
+
+            if self.bots_deck[self.bots_card_num][0].name == 'Казнь':
+                self.card_to_kill()
+
+            self.bots_deck[self.bots_card_num] = (Card
+                                                  (Character(temp, True),
+                                                   Button(
+                                                       int(self.window_width / 3.52 + self.bots_card_num * self.window_width / 15.52),
+                                                       int(self.window_height / 1.21), int(self.window_width / 15.52),
+                                                       int(self.window_height / 6.4), '',
+                                                       f'resources/character/{temp}/used.png',
+                                                       f'resources/character/{temp}/used.png')))
+
+            self.bots_putted_card.append(Card(self.bots_deck[self.bots_card_num][0], Button(card_x, card_y,
+                                                                                            int(self.window_width / 15.52),
+                                                                                            int(self.window_height / 8.4),
+                                                                                            '',
+                                                                                            f'resources/character/{temp}/image.png',
+                                                                                            f'resources/character/{temp}/after.png',
+
+                                                                                            f'resources/character/{temp}/sound.mp3')))
+            try:
+                temp = self.bots_deck[self.bots_card_num + 1][0].path
+                self.next_bot_card = Card(Character(temp),
+                                          Button(int(self.window_width / 1.25), int(self.window_height / 19),
+                                                 int(self.window_width / 15.52),
+                                                 int(self.window_height / 6.4), '',
+                                                 f'resources/character/{temp}/image.png',
+                                                 f'resources/character/{temp}/after.png',
+                                                 f'resources/character/{temp}/sound.mp3'))
+            except IndexError:
+                pass
+            self.bots_card_num += 1
+            for i in self.putted_card:
+                i[1].draw(self.window)
+            time.sleep(0.3)
+            self.redrawing()
+            pygame.display.flip()
+            time.sleep(0.1)
+            bots_frac = self.check_frac([i[0] for i in self.bots_putted_card])
+            font = pygame.font.SysFont("Times new roman", int(self.shrift_coefficient))
+
+            if bots_frac["e"] >= 3 and "Я инженер — этим всё сказано!" not in self.used_bot_comb:
+                self.player_damage = 0
+                self.used_bot_comb.append("Я инженер — этим всё сказано!")
+                text = font.render('Противник собрал комбинацию: "Я инженер — этим всё сказано!"', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                text = font.render('Ваш урон уменьшен до 0', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                self.draw_board()
+                time.sleep(0.5)
+            elif bots_frac["s"] >= 3 and "Ученье-свет!" not in self.used_bot_comb:
+                self.bot_health += 150
+                self.used_bot_comb.append("Ученье-свет!")
+                text = font.render('Противник собрал комбинацию: "Ученье-свет!"', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                text = font.render('Здоровье противника увеличено на 150', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                self.draw_board()
+                time.sleep(0.5)
+            elif bots_frac["m"] >= 3 and "Искалеченная плоть, искалеченная душа" not in self.used_bot_comb:
+                self.used_bot_comb.append("Искалеченная плоть, искалеченная душа")
+                self.bot_damage += 100
+                text = font.render('Урон противника увеличен на 100', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                text = font.render('Противник собрал комбинацию: "Искалеченная плоть искалеченная душа"', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                self.draw_board()
+                time.sleep(0.5)
+            elif bots_frac["s"] >= 2 and bots_frac[
+                "m"] >= 2 and "Одна голова хорошо, а две — мутант!" not in self.used_bot_comb:
+                self.used_bot_comb.append("Одна голова хорошо, а две — мутант!")
+                self.bot_health += 200
+                text = font.render('Здоровье противника увеличено на 200', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                text = font.render('Противник собрал комбинацию: "Одна голова хорошо а две — мутант!"', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                self.draw_board()
+                time.sleep(0.5)
+            elif bots_frac["e"] >= 2 and (
+                    bots_frac["s"] >= 2 or bots_frac[
+                "m"] >= 2) and "Человек хуже мутанта, когда он мутант." not in self.used_bot_comb:
+                self.used_bot_comb.append("Человек хуже мутанта, когда он мутант.")
+                self.bot_damage += 300
+                text = font.render('Урон противника увеличен на 350', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                text = font.render('Противник собрал комбинацию: "Человек хуже мутанта когда он мутант."', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                self.draw_board()
+                time.sleep(0.5)
+            elif bots_frac["s"] >= 5 and "Плох тот ученый который не инженер" not in self.used_bot_comb:
+                self.used_bot_comb.append("Плох тот ученый который не инженер")
+                self.bot_health += 350
+                text = font.render('Здоровье противника увеличено на 450', True, self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                text = font.render('Противник собрал комбинацию: "Плох тот ученый который не инженер"', True,
+                                   self.button_color)
+                self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                self.draw_board()
+                time.sleep(0.5)
         except IndexError:
             pass
-        self.bots_card_num += 1
-        for i in self.putted_card:
-            i[1].draw(self.window)
-        time.sleep(0.3)
-        self.redrawing()
-        pygame.display.flip()
-        time.sleep(0.1)
-        bots_frac = self.check_frac([i[0] for i in self.bots_putted_card])
-        font = pygame.font.SysFont("Times new roman", int(self.shrift_coefficient))
-
-        if bots_frac["e"] >= 3 and "Я инженер — этим всё сказано!" not in self.used_bot_comb:
-            self.player_damage = 0
-            self.used_bot_comb.append("Я инженер — этим всё сказано!")
-            text = font.render('Противник собрал комбинацию: "Я инженер — этим всё сказано!"', True, self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
-            text = font.render('Ваш урон уменьшен до 0', True, self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
-            self.draw_board()
-            time.sleep(0.5)
-        elif bots_frac["s"] >= 3 and "Ученье-свет!" not in self.used_bot_comb:
-            self.player_health += 150
-            self.used_bot_comb.append("Ученье-свет!")
-            text = font.render('Противник собрал комбинацию: "Ученье-свет!"', True, self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
-            text = font.render('Здоровье противника увеличено на 150', True, self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
-            self.draw_board()
-            time.sleep(0.5)
-        elif bots_frac["m"] >= 3 and "Искалеченная плоть, искалеченная душа" not in self.used_bot_comb:
-            self.used_bot_comb.append("Искалеченная плоть, искалеченная душа")
-            self.player_damage += 100
-            text = font.render('Урон противника увеличен на 100', True, self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
-            text = font.render('Противник собрал комбинацию: "Искалеченная плоть искалеченная душа"', True,
-                               self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
-            self.draw_board()
-            time.sleep(0.5)
-        elif bots_frac["s"] >= 2 and bots_frac[
-            "m"] >= 2 and "Одна голова хорошо, а две — мутант!" not in self.used_bot_comb:
-            self.used_bot_comb.append("Одна голова хорошо, а две — мутант!")
-            self.bot_health += 200
-            text = font.render('Здоровье противника увеличено на 200', True, self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
-            text = font.render('Противник собрал комбинацию: "Одна голова хорошо а две — мутант!"', True,
-                               self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
-            self.draw_board()
-            time.sleep(0.5)
-        elif bots_frac["e"] >= 2 and (
-                bots_frac["s"] >= 2 or bots_frac[
-            "m"] >= 2) and "Человек хуже мутанта, когда он мутант." not in self.used_bot_comb:
-            self.used_bot_comb.append("Человек хуже мутанта, когда он мутант.")
-            self.bot_damage += 350
-            text = font.render('Урон противника увеличен на 350', True, self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
-            text = font.render('Противник собрал комбинацию: "Человек хуже мутанта когда он мутант."', True,
-                               self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
-            self.draw_board()
-            time.sleep(0.5)
-        elif bots_frac["s"] >= 5 and "Плох тот ученый который не инженер" not in self.used_bot_comb:
-            self.used_bot_comb.append("Плох тот ученый который не инженер")
-            self.bot_health += 450
-            text = font.render('Здоровье противника увеличено на 450', True, self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
-            text = font.render('Противник собрал комбинацию: "Плох тот ученый который не инженер"', True,
-                               self.button_color)
-            self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
-            self.draw_board()
-            time.sleep(0.5)
-
         self.turn = True
         self.action_button.text = 'пас'
         if self.bots_card_num == len(self.bots_deck) - 1:
@@ -479,26 +495,26 @@ class Mission:
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                     self.draw_board()
                     time.sleep(0.5)
-                elif a["s"] >= 3 and "Ученье-свет!" not in self.used_comb:
-                    self.player_health += 150
+                if a["s"] >= 3 and "Ученье-свет!" not in self.used_comb:
+                    self.player_health += 200
                     self.used_comb.append("Ученье-свет!")
                     text = font.render('Вы собрали комбинацию: "Ученье-свет!"', True, self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
-                    text = font.render('Ваше здоровье увеличено на 150', True, self.button_color)
+                    text = font.render('Ваше здоровье увеличено на 200', True, self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                     self.draw_board()
                     time.sleep(0.5)
-                elif a["m"] >= 3 and "Искалеченная плоть, искалеченная душа" not in self.used_comb:
+                if a["m"] >= 3 and "Искалеченная плоть, искалеченная душа" not in self.used_comb:
                     self.used_comb.append("Искалеченная плоть, искалеченная душа")
-                    self.player_damage += 100
-                    text = font.render('Ваш урон увеличен на 100', True, self.button_color)
+                    self.player_damage += 150
+                    text = font.render('Ваш урон увеличен на 150', True, self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                     text = font.render('Вы собрали комбинацию: "Искалеченная плоть, искалеченная душа"', True,
                                        self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                     self.draw_board()
                     time.sleep(0.5)
-                elif a["s"] >= 2 and a["m"] >= 2 and "Одна голова хорошо, а две — мутант!" not in self.used_comb:
+                if a["s"] >= 2 and a["m"] >= 2 and "Одна голова хорошо, а две — мутант!" not in self.used_comb:
                     self.used_comb.append("Одна голова хорошо, а две — мутант!")
                     self.player_health += 200
                     text = font.render('Ваше здоровье увеличено на 200', True, self.button_color)
@@ -508,7 +524,7 @@ class Mission:
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                     self.draw_board()
                     time.sleep(0.5)
-                elif a["e"] >= 2 and (
+                if a["e"] >= 2 and (
                         a["s"] >= 2 or a["m"] >= 2) and "Человек хуже мутанта, когда он мутант." not in self.used_comb:
                     self.used_comb.append("Человек хуже мутанта, когда он мутант.")
                     self.player_damage += 350
@@ -519,10 +535,10 @@ class Mission:
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                     self.draw_board()
                     time.sleep(0.5)
-                elif a["s"] >= 5 and "Плох тот ученый который не инженер" not in self.used_comb:
+                if a["s"] >= 5 and "Плох тот ученый который не инженер" not in self.used_comb:
                     self.used_comb.append("Плох тот ученый который не инженер")
-                    self.player_health += 450
-                    text = font.render('Ваше здоровье увеличено на 450', True, self.button_color)
+                    self.player_health += 490
+                    text = font.render('Ваше здоровье увеличено на 490', True, self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                     text = font.render('Вы собрали комбинацию: "Плох тот ученый который не инженер"', True,
                                        self.button_color)
@@ -581,6 +597,7 @@ class Mission:
         self.bot_health += int(spy[0].health)
         self.bot_damage += int(spy[0].damage)
 
+        self.bots_card_num += 1
         for i in self.putted_card:
             i[1].draw(self.window)
         time.sleep(0.3)
@@ -595,7 +612,7 @@ class Mission:
         self.action_button.text = 'пас'
 
     def card_to_kill(self):
-        maxik = 0
+        maxik = -1
         for i in self.putted_card:
             if maxik < int(i[0].health) + int(i[0].damage) and i not in self.dead_card:
                 maxik = max(maxik, int(i[0].health) + int(i[0].damage))

@@ -1,5 +1,5 @@
 name:Бастион:str
 health:110:int
 cost:200:int
-experience:200:int
+experience:150:int
 technology:stormtroopers:str

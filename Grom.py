@@ -87,6 +87,8 @@ class Grom:
         self.main_menu()
 
     def main_menu(self):
+        pygame.mixer.music.load("resources/sound/main_theme.mp3")
+        pygame.mixer.music.play(-1)
         running = True
         while running:
             for event in pygame.event.get():
