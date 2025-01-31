@@ -10,3 +10,6 @@ class Card:
 
     def draw(self, surface):
         self.button.draw(surface)
+
+    def __str__(self):
+        return self.character
