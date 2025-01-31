@@ -52,7 +52,11 @@ class Settings:
         pygame.display.set_caption("Настройки")
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
-        self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf", 16)
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
+        self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf", 20 *
+                                     self.window_height * self.window_width // user32.GetSystemMetrics(
+            0) // user32.GetSystemMetrics(1))
 
         #  создание надписей
         self.text_complexity = self.font.render("Сбросить настройки", True, self.button_color)
@@ -197,7 +201,7 @@ class Settings:
 
             self.volume_status = Settings_Button(int(self.screen_size[0] / 2.58), int(self.screen_size[1] / 11.6),
                                                  int(self.screen_size[0] / 3.6), int(self.screen_size[1] / 10),
-                                                 f'{self.temp_volume}',
+                                                 f'{int(self.temp_volume)}',
                                                  'resources/pictures/after1.png',
                                                  'resources/pictures/before.png',
                                                  'resources/sound/btn_on.mp3')
@@ -299,10 +303,14 @@ class Settings:
         user32.SetProcessDPIAware()
         self.screen_size = (int(self.screen_list[self.temp_screen].split()[0]),
                             int(self.screen_list[self.temp_screen].split()[-1]))
-        print(20 // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1) // int(
-            self.screen_list[self.temp_screen].split()[0]) // int(self.screen_list[self.temp_screen].split()[-1]),
+        print(20 * int(
+            self.screen_list[self.temp_screen].split()[0]) * int(
+            self.screen_list[self.temp_screen].split()[-1]) // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1),
               file=open('resources/settings/font_settings/font_size.txt', 'w'))
-
+        self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",
+                                     20 // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1) * int(
+                                         self.screen_list[self.temp_screen].split()[0]) * int(
+                                         self.screen_list[self.temp_screen].split()[-1]))
         self.volume.SetMasterVolumeLevelScalar(float(self.temp_volume) / 100, None)
         if self.temp_fps:
             temp = pygame.image.load("resources/pictures/after1.png")

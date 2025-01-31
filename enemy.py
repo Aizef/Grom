@@ -1,7 +1,7 @@
 import os
 import random
 
-from card import Card
+from сard import Card
 from buttons import Button
 from character import Character
 
