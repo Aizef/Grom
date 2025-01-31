@@ -39,6 +39,7 @@ class Settings:
         self.temp_screen = self.get('screen_status')
         self.screen_size = (self.window_width,
                             self.window_height)
+
         if self.setting['fullscreen_status'] == 'True':
             self.screen = pygame.display.set_mode((0, 0), FULLSCREEN)
             self.window = pygame.display.set_mode(self.screen_size, FULLSCREEN)
@@ -47,10 +48,11 @@ class Settings:
         self.background_image = pygame.image.load("resources/pictures/set_final.png")
         self.background_image = pygame.transform.scale(self.background_image, self.screen_size)
         self.window.blit(self.background_image, (0, 0))
+
         pygame.display.set_caption("Настройки")
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
-        self.font = pygame.font.Font("resources/other/shrift.otf", 16)
+        self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf", 16)
 
         #  создание надписей
         self.text_complexity = self.font.render("Сбросить настройки", True, self.button_color)
@@ -89,6 +91,7 @@ class Settings:
                             self.temp_screen = int(self.temp_screen) - 1
                         else:
                             self.temp_screen = len(self.screen_list) - 1
+
                         self.screen_status.text = str(self.screen_list[self.temp_screen])
                         pygame.display.flip()
 
@@ -132,7 +135,8 @@ class Settings:
                         json.dump({"fps_status": "False", "fullscreen_status": 'True',
                                    "volume_level": 60, "screen_status": 15, "last_user": getpass.getuser()},
                                   open('resources/settings/settings.json', 'w'))
-                        s = Settings(user32.GetSystemMetrics(0), user32.GetSystemMetrics(1), self.window, self.back_object)
+                        s = Settings(user32.GetSystemMetrics(0), user32.GetSystemMetrics(1), self.window,
+                                     self.back_object)
                         s.open()
 
                     elif self.back_btn.is_hovered:
@@ -185,11 +189,11 @@ class Settings:
                                             'resources/sound/btn_on.mp3')
 
             self.default = Button(int(self.screen_size[0] / 2.8), int(self.screen_size[1] / 1.65),
-                                               int(self.screen_size[0] / 3.66), int(self.screen_size[1] / 7.43),
-                                               'Подтвердить',
-                                               'resources/pictures/before.png',
-                                               'resources/pictures/after.png',
-                                               'resources/sound/btn_on.mp3')
+                                  int(self.screen_size[0] / 3.66), int(self.screen_size[1] / 7.43),
+                                  'Подтвердить',
+                                  'resources/pictures/before.png',
+                                  'resources/pictures/after.png',
+                                  'resources/sound/btn_on.mp3')
 
             self.volume_status = Settings_Button(int(self.screen_size[0] / 2.58), int(self.screen_size[1] / 11.6),
                                                  int(self.screen_size[0] / 3.6), int(self.screen_size[1] / 10),
@@ -291,8 +295,14 @@ class Settings:
         self.back_btn.draw(self.window)
 
     def insert_settings(self):
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
         self.screen_size = (int(self.screen_list[self.temp_screen].split()[0]),
                             int(self.screen_list[self.temp_screen].split()[-1]))
+        print(20 // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1) // int(
+            self.screen_list[self.temp_screen].split()[0]) // int(self.screen_list[self.temp_screen].split()[-1]),
+              file=open('resources/settings/font_settings/font_size.txt', 'w'))
+
         self.volume.SetMasterVolumeLevelScalar(float(self.temp_volume) / 100, None)
         if self.temp_fps:
             temp = pygame.image.load("resources/pictures/after1.png")

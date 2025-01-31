@@ -1,3 +1,4 @@
+import ctypes
 import json
 import sys
 from ctypes import cast
@@ -21,8 +22,10 @@ class Grom:
         pygame.mixer.music.play(-1)
         self.width = width
         self.height = height
-        self.k = 250 * self.width * self.height // 2560 // 1600
-        self.font = pygame.font.Font('resources/other/shrift.otf', 250 * self.width * self.height // 2560 // 1600)
+        user32 = ctypes.windll.user32
+        user32.SetProcessDPIAware()
+        user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1)
+        self.font = pygame.font.Font('resources/settings/font_settings/shrift.otf', 150 * self.width * self.height // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1))
         self.settings = json.load(open('resources/settings/settings.json'))
 
         if self.settings['fullscreen_status'] == 'True':
@@ -70,6 +73,7 @@ class Grom:
             self.screen = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
             self.screen = pygame.display.set_mode((self.width, self.height))
+
         self.background_image = pygame.image.load("resources/pictures/missions_pic.png")
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
         self.go_to_mission_btn = Button(int(self.width / 4), int(self.height / 3.86), int(self.width / 2), self.width // 12, 'Перейти к миссиям',
@@ -137,6 +141,3 @@ class Grom:
 
     def get_fps_result(self):
         return self.settings['fps_status']
-
-    def get_k(self):
-        return self.k

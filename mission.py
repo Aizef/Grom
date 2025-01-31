@@ -47,9 +47,9 @@ class Mission:
         self.grom_clock = pygame.time.Clock()
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
-        self.shrift_coefficient = 35 * self.window_width * self.window_height // user32.GetSystemMetrics(
-            0) // user32.GetSystemMetrics(1)
-        self.font = pygame.font.Font('resources/other/shrift.otf', self.shrift_coefficient // 2)
+        self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",
+                                     20 * self.window_width * self.window_height // user32.GetSystemMetrics(
+                                         0) // user32.GetSystemMetrics(1))
         self.settings = json.load(open("resources/settings/settings.json"))
         fps_status = self.settings['fps_status']
         if fps_status == "True":
@@ -69,7 +69,6 @@ class Mission:
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
         self.change_counter = 5
-        self.font = pygame.font.Font("resources/other/shrift.otf", self.shrift_coefficient // 2)
         self.stat_health = self.font.render("", True, self.button_color)
         self.stat_name = self.font.render("", True, self.button_color)
         self.stat_damage = self.font.render("", True, self.button_color)
@@ -207,8 +206,7 @@ class Mission:
         self.previous_object.open(True)
 
     def bot_final_turn(self):
-        if len(self.bots_deck) != len(self.bots_putted_card) and len(self.bots_putted_card) != 0 and len(
-                self.putted_card) < len(self.bots_putted_card):
+        if len(self.bots_deck) != len(self.bots_putted_card):
             while (self.player_health - self.bot_damage > self.bot_health - self.player_damage) or self.stat[
                 'bots_putted_card'] == 15:
                 self.bot_turn()
@@ -267,14 +265,15 @@ class Mission:
 
                                                                                             f'resources/character/{temp}/sound.mp3')))
             try:
-                temp = self.bots_deck[self.bots_card_num + 1][0].path
-                self.next_bot_card = Card(Character(temp),
-                                          Button(int(self.window_width / 1.25), int(self.window_height / 19),
-                                                 int(self.window_width / 15.52),
-                                                 int(self.window_height / 6.4), '',
-                                                 f'resources/character/{temp}/image.png',
-                                                 f'resources/character/{temp}/after.png',
-                                                 f'resources/character/{temp}/sound.mp3'))
+                if self.dif != 'Ангел Смерти':
+                    temp = self.bots_deck[self.bots_card_num + 1][0].path
+                    self.next_bot_card = Card(Character(temp),
+                                              Button(int(self.window_width / 1.25), int(self.window_height / 19),
+                                                     int(self.window_width / 15.52),
+                                                     int(self.window_height / 6.4), '',
+                                                     f'resources/character/{temp}/image.png',
+                                                     f'resources/character/{temp}/after.png',
+                                                     f'resources/character/{temp}/sound.mp3'))
             except IndexError:
                 pass
             self.bots_card_num += 1
@@ -640,7 +639,7 @@ class Mission:
         self.dead_card.append(max_card[0])
 
     def over(self):
-        font = pygame.font.Font("resources/other/shrift.otf", self.shrift_coefficient)
+        font = pygame.font.Font("resources/settings/font_settings/shrift.otf", self.shrift_coefficient)
 
         self.stat['bots_summary_damage'] += self.bot_damage
         self.stat['players_summary_damage'] += self.player_damage
