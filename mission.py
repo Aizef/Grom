@@ -594,8 +594,8 @@ class Mission:
             if maxik < int(i[0].health) + int(i[0].damage) and i not in self.dead_card:
                 maxik = max(maxik, int(i[0].health) + int(i[0].damage))
                 max_card = (i, 'p')
-        for i in self.bots_putted_card and i not in self.dead_card:
-            if maxik < int(i[0].health) + int(i[0].damage):
+        for i in self.bots_putted_card:
+            if maxik < int(i[0].health) + int(i[0].damage) and i not in self.dead_card:
                 maxik = max(maxik, int(i[0].health) + int(i[0].damage))
                 max_card = (i, 'b')
         try:
@@ -688,7 +688,7 @@ class Mission:
         self.player_status = self.player_status = self.font.render("Обменяйте или выложите карту", True,
                                                                    self.button_color)
         self.redrawing()
-        if len(self.new_deck) == 0:
+        if len(self.new_deck) == 0 and self.bots_hearts != 0:
             result = font.render('Вы проиграли', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
             time.sleep(0.3)

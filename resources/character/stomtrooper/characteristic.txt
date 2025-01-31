@@ -1,4 +1,4 @@
-name:Штурмовик:str
+name:Боец:str
 health:80:int
 cost:75:int
 experience:75:int

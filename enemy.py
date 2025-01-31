@@ -17,12 +17,13 @@ class Enemy:
     def fill_opponents_deck(self, dif):
         if dif == "Щадящий":
             counter = 0
-            while counter != 15:
+            while counter != 10:
                 temp = random.choice(os.listdir('resources/character'))
                 if (temp not in self.enemy_ch and Character(temp).frac[0] == "m" or Character(temp).frac[0] == "s" and
                         Character(temp).name.lower() != "бастион" and Character(
-                            temp).name.lower() != "штурмовик" and Character(temp).name.lower() != "снайпер"):
+                            temp).name.lower() != "штурмовик" and Character(temp).name.lower() != "снайпер") and temp != 'question':
                     self.enemy_ch.append(temp)
+                    print(temp)
                     self.enemy_deck.append(Card(Character(temp),
                                                 Button(int(self.window_width / 2 + len(
                                                     self.enemy_deck) * self.window_width / 15.52),
@@ -36,7 +37,7 @@ class Enemy:
             counter = 0
             while counter != 15:
                 temp = random.choice(os.listdir('resources/character'))
-                if temp not in self.enemy_ch and Character(temp).name.lower() not in "бастионштурмовикснайпер":
+                if temp not in self.enemy_ch and Character(temp).name.lower() not in "бастионштурмовикснайпер" and temp != 'question':
                     self.enemy_ch.append(temp)
                     self.enemy_deck.append(Card(Character(temp),
                                                 Button(int(self.window_width / 3.52 + len(
@@ -51,7 +52,7 @@ class Enemy:
             counter = 0
             while counter != 4:
                 temp = random.choice(os.listdir('resources/character'))
-                if temp not in self.enemy_ch and Character(temp).frac[0] != "m" and Character(temp).frac[0] != "s":
+                if temp not in self.enemy_ch and Character(temp).frac[0] != "m" and Character(temp).frac[0] != "s" and temp != 'question':
                     self.enemy_ch.append(temp)
                     self.enemy_deck.append(Card(Character(temp),
                                                 Button(int(self.window_width / 2 + len(
