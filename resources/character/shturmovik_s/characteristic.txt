@@ -1,0 +1,5 @@
+name:Штурмовик:str
+health:150:int
+cost:130:int
+experience:130:int
+technology:sturm:str

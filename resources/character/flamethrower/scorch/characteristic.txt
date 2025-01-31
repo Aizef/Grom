@@ -1,0 +1,5 @@
+name:Казнь:str
+health:0:int
+cost:0:int
+experience:0:int
+technology:mutant:str

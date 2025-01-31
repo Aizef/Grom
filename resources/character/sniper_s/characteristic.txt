@@ -1,0 +1,5 @@
+name:Снайпер:str
+health:100:int
+cost:300:int
+experience:200:int
+technology:engineers:str
