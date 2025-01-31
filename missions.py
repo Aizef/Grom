@@ -174,15 +174,15 @@ class Missions:
         self.window.blit(self.text,
                          (int(self.window_height / 18), self.window_height // 12))
         self.window.blit(self.comb1_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 7.2 + 208 * self.window_height // 800)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 7.2 + 208 * self.window_height // 1600 // 2)))
         self.window.blit(self.comb2_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 3.5 + 208 * self.window_height // 800)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 3.5 + 208 * self.window_height // 1600 // 2)))
         self.window.blit(self.comb3_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 2.4 + 208 * self.window_height // 800)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 2.4 + 208 * self.window_height // 1600 // 2)))
         self.window.blit(self.comb4_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 1.845 + 208 * self.window_height // 800)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 1.845 + 208 * self.window_height // 1600 // 2)))
         self.window.blit(self.comb5_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 1.47 + 208 * self.window_height // 800)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 1.47 + 208 * self.window_height // 1600 // 2)))
 
         self.window.blit(self.comb1_image, self.comb1.topleft)
         self.window.blit(self.comb2_image, self.comb2.topleft)
