@@ -8,7 +8,7 @@ import pygame
 from pygame import FULLSCREEN
 import time
 
-from сard import Card
+from card import Card
 from anim_sprite import AnimatedSprite, load_image
 from buttons import Button
 from character import Character
@@ -353,15 +353,11 @@ class Mission:
             pass
         self.turn = True
         self.action_button.text = 'пас'
-        if self.bots_card_num == len(self.bots_deck) - 1:
-            font = pygame.font.Font("resources/settings/font_settings/shrift.otf", self.shrift_coefficient)
-            result = font.render('Противник проиграл из-за недостатка карт', True, self.button_color)
-            self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
-            pygame.display.flip()
-            time.sleep(1)
-            self.bots_hearts = 0
-            self.comp = True
-            self.open()
+        if self.bots_card_num == len(self.bots_deck):
+            if len(self.putted_card) != len(self.deck):
+                self.turn = True
+            else:
+                self.over()
 
     def change(self, num):
         while True:
