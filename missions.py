@@ -10,14 +10,13 @@ from mission import Mission
 
 class Missions:
     def __init__(self, window_width, window_height, screen, last_object):
-        pygame.init()
         self.grom_clock = pygame.time.Clock()
 
         self.window_width = window_width
         self.window_height = window_height
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
-         #  рисуем окно настроек
+        #  рисуем окно настроек
         if json.load(open('resources/settings/settings.json'))['fullscreen_status'] == 'True':
             self.window = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
@@ -30,8 +29,10 @@ class Missions:
         self.button_text_color = (0, 0, 0)
         self.grom_clock = pygame.time.Clock()
 
-        self.font = pygame.font.Font('resources/settings/font_settings/shrift.otf', 20 * self.window_width * self.window_height // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1)
-)
+        self.font = pygame.font.Font('resources/settings/font_settings/shrift.otf',
+                                     20 * self.window_width * self.window_height // user32.GetSystemMetrics(
+                                         0) // user32.GetSystemMetrics(1)
+                                     )
 
         self.text = self.font.render("Основные комбинации, без которых не одержать победы:", True, (255, 205, 234))
         self.comb1_text = self.font.render("Одна голова хорошо, а две мутант! = Дает 100 едениц урона", True,
@@ -45,7 +46,9 @@ class Missions:
         self.comb5_text = self.font.render("Человек хуже мутанта, когда он мутант. = Дает 200 едениц здоровья", True,
                                            (255, 205, 234))
 
-        self.font = pygame.font.SysFont("Times New roman", 35 * self.window_width * self.window_height // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1))
+        self.font = pygame.font.SysFont("Times New roman",
+                                        35 * self.window_width * self.window_height // user32.GetSystemMetrics(
+                                            0) // user32.GetSystemMetrics(1))
 
         self.ben_comb1_text = self.font.render("+ 100 едениц урона", True, (255, 205, 234))
         self.ben_comb2_text = self.font.render("+ 200 едениц урона", True, (255, 205, 234))
@@ -175,15 +178,20 @@ class Missions:
         self.window.blit(self.text,
                          (int(self.window_height / 18), self.window_height // 12))
         self.window.blit(self.comb1_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 7.2 + 208 * self.window_height // 3200)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560,
+                          int(self.window_height / 7.2 + 208 * self.window_height // 3200)))
         self.window.blit(self.comb2_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 3.5 + 208 * self.window_height // 3200)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560,
+                          int(self.window_height / 3.5 + 208 * self.window_height // 3200)))
         self.window.blit(self.comb3_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 2.4 + 208 * self.window_height // 3200)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560,
+                          int(self.window_height / 2.4 + 208 * self.window_height // 3200)))
         self.window.blit(self.comb4_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 1.845 + 208 * self.window_height // 3200)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560,
+                          int(self.window_height / 1.845 + 208 * self.window_height // 3200)))
         self.window.blit(self.comb5_text,
-                         (int(self.window_height / 18) + 493 * self.window_width // 2560, int(self.window_height / 1.47 + 208 * self.window_height // 3200)))
+                         (int(self.window_height / 18) + 493 * self.window_width // 2560,
+                          int(self.window_height / 1.47 + 208 * self.window_height // 3200)))
 
         self.window.blit(self.comb1_image, self.comb1.topleft)
         self.window.blit(self.comb2_image, self.comb2.topleft)

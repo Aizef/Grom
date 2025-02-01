@@ -19,23 +19,19 @@ from enemy import Enemy
 # создание класса и инициализация
 class Mission:
     def __init__(self, window_width, window_height, screen, pr, dif, n, bi_path):
-        pygame.init()
-        
+
         # запоминание уровня сложности
         self.dif = dif
         self.bi = bi_path
-        
+
         # определения звукового сопровождения в зависимости от уровня сложности
         if self.dif.lower() == "щадящий":
-            pygame.mixer.music.load("resources/sound/first_mis.mp3")
-            pygame.mixer.music.play(-1)
+            pygame.mixer.music.load('resources/sound/first_mis.mp3')
         elif self.dif.lower() == "ветеран":
-            pygame.mixer.music.load("resources/sound/sec_mis.mp3")
-            pygame.mixer.music.play(-1)
+            pygame.mixer.music.load('resources/sound/sec_mis.mp3')
         elif self.dif.lower() == "ангел смерти":
-            pygame.mixer.music.load("resources/sound/third_mis.mp3")
-            pygame.mixer.music.play(-1)
-
+            pygame.mixer.music.load('resources/sound/third_mis.mp3')
+        pygame.mixer.music.play(-1)
         # создание заголовка и спрайтов
         pygame.display.set_caption(f'Миссия под номером: {n}')
         self.all_sprites = pygame.sprite.Group()
@@ -450,7 +446,6 @@ class Mission:
         self.window.blit(self.stat_health, (int(self.window_width / 7.5), int(self.window_height / 2.2)))
         self.window.blit(self.stat_damage, (int(self.window_width / 7.5), int(self.window_height / 2.1)))
         self.window.blit(self.stat_frac, (int(self.window_width / 7.5), int(self.window_height / 2)))
-        self.window.blit(self.stat_frac, (int(self.window_width), int(self.window_height / 1.9)))
 
         # создание параметров здоровья и урона игрока и бота
         self.player_health_text = self.font.render(f"Ваше здоровье: {self.player_health}", True, self.button_color)

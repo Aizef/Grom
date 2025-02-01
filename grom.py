@@ -14,14 +14,15 @@ from buttons import Button
 from missions import Missions
 from settings import Settings
 
+
 class Grom:
     def __init__(self, width, height):
-        pygame.init()
         pygame.font.init()
-        pygame.mixer.music.load("resources/sound/main_theme.mp3")
-        pygame.mixer.music.play(-1)
         self.width = width
         self.height = height
+        pygame.init()
+        pygame.mixer.music.load('resources/sound/main_theme.mp3')
+        pygame.mixer.music.play(-1)
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
         user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1)
@@ -91,8 +92,6 @@ class Grom:
         self.main_menu()
 
     def main_menu(self):
-        pygame.mixer.music.load("resources/sound/main_theme.mp3")
-        pygame.mixer.music.play(-1)
         running = True
         while running:
             for event in pygame.event.get():

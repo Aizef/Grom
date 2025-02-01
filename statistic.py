@@ -8,7 +8,6 @@ from pygame import FULLSCREEN
 
 class Statistic_window:
     def __init__(self, window_width, window_height, screen, pr, stat, comp):
-        pygame.init()
         self.window_width = window_width
         self.window_height = window_height
         self.previous_object = pr

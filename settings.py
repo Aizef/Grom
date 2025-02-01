@@ -12,10 +12,11 @@ from pygame import FULLSCREEN
 from buttons import Settings_Button, Button
 import ctypes
 
+from list_modes import List_modes
+
 
 class Settings:
     def __init__(self, window_width, window_height, screen, last_object):
-        pygame.init()
         self.setting = json.load(open('resources/settings/settings.json'))
         self.clock = pygame.time.Clock()
         self.verification = False
@@ -32,9 +33,7 @@ class Settings:
         self.volume = cast(interface, POINTER(IAudioEndpointVolume))
 
         #  код отвечает за изменение разрешения экрана
-        self.screen_list = []
-        for i in [res for res in pygame.display.list_modes() if res[0] >= 800 and res[1] >= 600][::-1]:
-            self.screen_list.append(f'{i[0]} x {i[1]}')
+        self.screen_list = List_modes()
 
         self.temp_screen = self.get('screen_status')
         self.screen_size = (self.window_width,
@@ -136,9 +135,12 @@ class Settings:
                     elif self.default.is_hovered:
                         user32 = ctypes.windll.user32
                         user32.SetProcessDPIAware()
-                        json.dump({"fps_status": "False", "fullscreen_status": 'True',
-                                   "volume_level": 60, "screen_status": 15, "last_user": getpass.getuser()},
-                                  open('resources/settings/settings.json', 'w'))
+                        for i in range(len(self.screen_list)):
+                            if int(self.screen_list[i].split('x')[0][:-1]) == user32.GetSystemMetrics(0):
+                                json.dump({"fps_status": "False", "fullscreen_status": 'True',
+                                           "volume_level": 60, "screen_status": i, "last_user": getpass.getuser()},
+                                          open('resources/settings/settings.json', 'w'))
+                                break
                         s = Settings(user32.GetSystemMetrics(0), user32.GetSystemMetrics(1), self.window,
                                      self.back_object)
                         s.open()

@@ -17,11 +17,6 @@ class Button:
             self.hover_image = pygame.transform.scale(self.hover_image, (width, height))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.sound = None
-        try:
-            if sound_path:
-                self.sound = pygame.mixer.Sound(sound_path)
-        except FileNotFoundError:
-            pass
         self.is_hovered = False
 
     def draw(self, screen, temp=0):  # функция для рендера кнопки
@@ -80,8 +75,6 @@ class Settings_Button:
             self.hover_image = pygame.transform.scale(self.hover_image, (width, height))
         self.rect = self.image.get_rect(topleft=(x, y))
         self.sound = None
-        if sound_path:
-            self.sound = pygame.mixer.Sound(sound_path)
         self.is_hovered = False
 
     def draw(self, screen, temp=0):  # функция для рендера кнопки
