@@ -38,7 +38,7 @@ class Button:
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
         screen.blit(current_image, self.rect.topleft)
         if temp == 0:
-            font = pygame.font.Font("resources/settings/font_settings/shrift.otf", int(open('resources/settings/font_settings/font_size.txt').read().strip()) * 2)
+            font = pygame.font.Font("resources/settings/font_settings/shrift.otf", int(open('resources/settings/font_settings/font_size.txt').read().strip()))
             text_surface = font.render(self.text, True, (255, 205, 234))
             text_rect = text_surface.get_rect(center=self.rect.center)
             screen.blit(text_surface, text_rect)
