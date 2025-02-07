@@ -1,3 +1,4 @@
+# импорт библиотек
 import ctypes
 import json
 import sys
@@ -14,18 +15,23 @@ from buttons import Button
 from missions import Missions
 from settings import Settings
 
-
+# создание класса главного меню
 class Grom:
+    # функция инициализации
     def __init__(self, width, height):
         pygame.font.init()
+        
         self.width = width
         self.height = height
+        
         pygame.init()
         pygame.mixer.music.load('resources/sound/main_theme.mp3')
         pygame.mixer.music.play(-1)
+        
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
         user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1)
+        
         self.font = pygame.font.Font('resources/settings/font_settings/shrift.otf', 150 * self.width * self.height // user32.GetSystemMetrics(0) // user32.GetSystemMetrics(1))
         self.settings = json.load(open('resources/settings/settings.json'))
 
@@ -59,17 +65,20 @@ class Grom:
                                         'resources/pictures/after1.png',
                                         'resources/pictures/after.png',
                                         'resources/sound/understood.mp3')
+        
         if self.get_fps_result() == "True":
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (255, 205, 234))
         else:
             self.grom_text_show_fps = self.font.render(f"{self.grom_clock.get_fps()}", True, (0, 0, 0))
+            
         self.grom_text = self.font.render("GROM", True, (255, 205, 234))
         self.screen.blit(self.grom_text_show_fps, (0, 0))
 
-
+    # функция для изменения параметров и повторного открытия
     def reopen(self, a, s):
         self.width, self.height = a, s
         self.settings = json.load(open('resources/settings/settings.json'))
+        
         if self.settings['fullscreen_status'] == 'True':
             self.screen = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
@@ -91,22 +100,27 @@ class Grom:
                                         'resources/sound/understood.mp3')
         self.main_menu()
 
+    # функция для запуска игрового цикла и отображения всех кнопок, надписей и т.д.
     def main_menu(self):
         running = True
+        
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
                     sys.exit()
+                    
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.go_to_desktop_btn.is_hovered:  # если нажата кнопка выйти из игры
                         pygame.quit()
                         sys.exit()
+                        
                     elif self.go_to_settings_btn.is_hovered:  # если нажата кнопка Настройки
                         self.go_to_settings_btn.handle_event(event)
                         settings = Settings(self.width, self.height, self.screen, self)
                         settings.open()
+                        
                     elif self.go_to_mission_btn.is_hovered:  # если нажата кнопка Перейти к миссиям
                         self.go_to_mission_btn.handle_event(event)
                         missions = Missions(self.width, self.height, self.screen, self)
@@ -137,6 +151,6 @@ class Grom:
             pygame.display.flip()
             self.screen.blit(self.background_image, (0, 0))
 
-
+    # функция для возвращения текущего фпс
     def get_fps_result(self):
         return self.settings['fps_status']
