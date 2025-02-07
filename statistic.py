@@ -22,7 +22,7 @@ class Statistic_window:
             self.window = pygame.display.set_mode((self.window_width, self.window_height))
         if comp:
             self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",
-                                         35 * self.window_width * self.window_height // user32.GetSystemMetrics(
+                                         30 * self.window_width * self.window_height // user32.GetSystemMetrics(
                                              0) // user32.GetSystemMetrics(1)
                                          )
             self.background_image = pygame.image.load("resources/pictures/mis_compl.png").convert_alpha()
@@ -33,7 +33,7 @@ class Statistic_window:
             self.background_image = pygame.transform.scale(self.background_image,
                                                            (self.window_width, self.window_height))
             self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",
-                                         35 * self.window_width * self.window_height // user32.GetSystemMetrics(
+                                         30 * self.window_width * self.window_height // user32.GetSystemMetrics(
                                              0) // user32.GetSystemMetrics(1)
                                          )
         pygame.display.set_caption("Финальное окно")
