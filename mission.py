@@ -32,9 +32,11 @@ class Mission:
         elif self.dif.lower() == "ангел смерти":
             pygame.mixer.music.load('resources/sound/third_mis.mp3')
         pygame.mixer.music.play(-1)
+        
         # создание заголовка и спрайтов
         pygame.display.set_caption(f'Миссия под номером: {n}')
         self.all_sprites = pygame.sprite.Group()
+        
         self.bots_health = AnimatedSprite(load_image("heart.png", True), 5, 1, window_width // 7.2,
                                           window_height // 3.85,
                                           self.all_sprites, 10)
@@ -48,6 +50,7 @@ class Mission:
         self.window_height = window_height
         self.previous_object = pr
         self.grom_clock = pygame.time.Clock()
+        
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
         self.shrift_coefficient = 35 * self.window_width * self.window_height // user32.GetSystemMetrics(
@@ -150,8 +153,10 @@ class Mission:
         self.bots_hearts = 2
         self.stat = {'bots_putted_card': 0, 'players_putted_car': 0, 'bots_summary_damage': 0,
                      'players_summary_damage': 0, 'bots_summary_health': 0, 'players_summary_health': 0}
+        
         if self.dif == 'Ангел Смерти':
             temp = 'question'
+            
         self.next_bot_card = Card(Character(temp), Button(int(self.window_width / 1.25), int(self.window_height / 19),
                                                           int(self.window_width / 15.52),
                                                           int(self.window_height / 6.4), '',
@@ -179,12 +184,15 @@ class Mission:
                                 self.change(i)
                             elif self.deck[i][1].is_hovered and self.turn == True:
                                 self.put_card(i)
+                                
                     if self.action_button.is_hovered and self.turn and self.change_counter != 0:
                         self.member_change(self.change_counter)
                         self.change_counter = 0
                         self.player_status = self.font.render("Выложите карту", True, self.button_color)
+                        
                     if self.change_counter == 0:
                         self.player_status = self.font.render("Выложите карту", True, self.button_color)
+                        
                     if self.action_button.text == 'пас' and self.action_button.is_hovered:
                         self.bot_final_turn()
 
@@ -197,6 +205,7 @@ class Mission:
                                                  f'resources/character/{i[0].path}/image.png')
                         self.stat_damage = self.font.render(f"Урон: {i[0].damage}", True, self.button_color)
                         self.stat_frac = self.font.render(f"Фракция: {i[0].frac}", True, self.button_color)
+                        
                 if self.next_bot_card[1].is_hovered:
                     self.stat_name = self.font.render(f"Имя: {self.next_bot_card[0].name}", True, self.button_color)
                     self.stat_health = self.font.render(f"Здоровье: {self.next_bot_card[0].health}", True,
@@ -209,6 +218,7 @@ class Mission:
                     self.stat_frac = self.font.render(f"Фракция: {self.next_bot_card[0].frac}", True, self.button_color)
 
             self.grom_clock.tick(90)
+            
             if self.get_fps_result() == "True":
                 self.grom_text_show_fps = self.font.render(f"{str(self.grom_clock.get_fps()).split('.')[0]}", True,
                                                            (255, 205, 234))
@@ -237,11 +247,14 @@ class Mission:
             while (self.player_health - self.bot_damage > self.bot_health - self.player_damage) or self.stat[
                 'bots_putted_card'] == 15:
                 self.bot_turn()
+                    
                 if self.bots_putted_card:
                     for i in self.bots_putted_card:
                         i[1].draw(self.window)
+                        
                 pygame.display.flip()
                 self.turn = False
+                    
             if self.player_health - self.bot_damage <= self.bot_health - self.player_damage:
                 time.sleep(0.4)
                 self.over()
@@ -335,6 +348,7 @@ class Mission:
                 self.used_bot_comb.append("Я инженер — этим всё сказано!")
                 text = font.render('Противник собрал комбинацию: "Я инженер — этим всё сказано!"', True,
                                    self.button_color)
+                
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                 text = font.render('Ваш урон уменьшен до 0', True, self.button_color)
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
@@ -346,6 +360,7 @@ class Mission:
                 self.bot_health += 150
                 self.used_bot_comb.append("Ученье-свет!")
                 text = font.render('Противник собрал комбинацию: "Ученье-свет!"', True, self.button_color)
+                
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                 text = font.render('Здоровье противника увеличено на 150', True, self.button_color)
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
@@ -357,6 +372,7 @@ class Mission:
                 self.used_bot_comb.append("Искалеченная плоть, искалеченная душа")
                 self.bot_damage += 100
                 text = font.render('Урон противника увеличен на 100', True, self.button_color)
+                
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                 text = font.render('Противник собрал комбинацию: "Искалеченная плоть искалеченная душа"', True,
                                    self.button_color)
@@ -370,6 +386,7 @@ class Mission:
                 self.used_bot_comb.append("Одна голова хорошо, а две — мутант!")
                 self.bot_health += 200
                 text = font.render('Здоровье противника увеличено на 200', True, self.button_color)
+                    
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                 text = font.render('Противник собрал комбинацию: "Одна голова хорошо а две — мутант!"', True,
                                    self.button_color)
@@ -384,6 +401,7 @@ class Mission:
                 self.used_bot_comb.append("Человек хуже мутанта, когда он мутант.")
                 self.bot_damage += 300
                 text = font.render('Урон противника увеличен на 300', True, self.button_color)
+                    
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                 text = font.render('Противник собрал комбинацию: "Человек хуже мутанта когда он мутант."', True,
                                    self.button_color)
@@ -396,6 +414,7 @@ class Mission:
                 self.used_bot_comb.append("Плох тот ученый который не инженер")
                 self.bot_health += 350
                 text = font.render('Здоровье противника увеличено на 350', True, self.button_color)
+                
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                 text = font.render('Противник собрал комбинацию: "Плох тот ученый который не инженер"', True,
                                    self.button_color)
@@ -551,6 +570,7 @@ class Mission:
                     card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.player_rows[0]
                     card_y = int(self.window_height / 2.4 + 10)
                     self.player_rows[0] += 1
+                    
                 elif self.deck[i][0].frac[0] == "m":  # второй ряд
                     card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.player_rows[1]
                     card_y = int(self.window_height / 1.8 - 1)
@@ -596,6 +616,7 @@ class Mission:
                     self.used_comb.append("Я инженер — этим всё сказано!")
                     text = font.render('Вы собрали комбинацию: "Я инженер — этим всё сказано!"', True,
                                        self.button_color)
+                    
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                     text = font.render('Урон противника уменьшен до 0', True, self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
@@ -607,6 +628,7 @@ class Mission:
                     self.player_health += 200
                     self.used_comb.append("Ученье-свет!")
                     text = font.render('Вы собрали комбинацию: "Ученье-свет!"', True, self.button_color)
+                    
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                     text = font.render('Ваше здоровье увеличено на 200', True, self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
@@ -618,6 +640,7 @@ class Mission:
                     self.used_comb.append("Искалеченная плоть, искалеченная душа")
                     self.player_damage += 150
                     text = font.render('Ваш урон увеличен на 150', True, self.button_color)
+                    
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                     text = font.render('Вы собрали комбинацию: "Искалеченная плоть, искалеченная душа"', True,
                                        self.button_color)
@@ -630,6 +653,7 @@ class Mission:
                     self.used_comb.append("Одна голова хорошо, а две — мутант!")
                     self.player_health += 200
                     text = font.render('Ваше здоровье увеличено на 200', True, self.button_color)
+                    
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                     text = font.render('Вы собрали комбинацию: "Одна голова хорошо, а две — мутант!"', True,
                                        self.button_color)
@@ -643,6 +667,7 @@ class Mission:
                     self.used_comb.append("Человек хуже мутанта, когда он мутант.")
                     self.player_damage += 350
                     text = font.render('Ваш урон увеличен на 350', True, self.button_color)
+                            
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                     text = font.render('Вы собрали комбинацию: "Человек хуже мутанта, когда он мутант."', True,
                                        self.button_color)
@@ -655,6 +680,7 @@ class Mission:
                     self.used_comb.append("Плох тот ученый который не инженер")
                     self.player_health += 490
                     text = font.render('Ваше здоровье увеличено на 490', True, self.button_color)
+                    
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
                     text = font.render('Вы собрали комбинацию: "Плох тот ученый который не инженер"', True,
                                        self.button_color)
