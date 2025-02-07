@@ -8,16 +8,21 @@ class Button:
                  is_on=None):
         self.y = y
         self.x = x
+                     
         self.height = height
         self.width = width
         self.text = text
+                     
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (width, height))
+                     
         self.hover_image = self.image
         self.is_on = is_on
+                     
         if hover_image_path:
             self.hover_image = pygame.image.load(hover_image_path)
             self.hover_image = pygame.transform.scale(self.hover_image, (width, height))
+            
         self.rect = self.image.get_rect(topleft=(x, y))
         self.sound = None
         self.is_hovered = False
