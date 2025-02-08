@@ -1,3 +1,4 @@
+# импорт библиотек
 import ctypes
 import json
 import sys
@@ -7,8 +8,9 @@ from pygame import FULLSCREEN
 from buttons import Settings_Button, Button
 from mission import Mission
 
-
+# создаем класс стартового окна
 class Missions:
+    # функция инициализации
     def __init__(self, window_width, window_height, screen, last_object):
         self.grom_clock = pygame.time.Clock()
 
@@ -16,17 +18,22 @@ class Missions:
         self.window_height = window_height
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
+        
         #  рисуем окно настроек
         if json.load(open('resources/settings/settings.json'))['fullscreen_status'] == 'True':
             self.window = pygame.display.set_mode((0, 0), FULLSCREEN)
         else:
             self.window = pygame.display.set_mode((self.window_width, self.window_height))
+            
         self.background_image = pygame.image.load("resources/pictures/mis_final.png").convert_alpha()
         self.background_image = pygame.transform.scale(self.background_image, (self.window_width, self.window_height))
         self.window.blit(self.background_image, (0, 0))
+        
         pygame.display.set_caption("Миссии")
+        
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
+        
         self.grom_clock = pygame.time.Clock()
 
         self.font = pygame.font.Font('resources/settings/font_settings/shrift.otf',
@@ -110,11 +117,11 @@ class Missions:
 
         self.previous_screen = screen
         self.back_object = last_object
-        #  рендер окна
 
         self.previous_screen.blit(self.window, (0, 0))
         pygame.display.flip()
-
+        
+    # функция для создания игрового цикла и обработки всех событий
     def open(self, full=False):
         if full:
             self.background_image = pygame.image.load("resources/pictures/mis_final.png").convert_alpha()
@@ -122,29 +129,39 @@ class Missions:
                                                            (self.window_width, self.window_height))
             self.window.blit(self.background_image, (0, 0))
             pygame.display.set_caption("Миссии")
+            
         running = True
+        
         while running:
             pos = pygame.mouse.get_pos()
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                     pygame.quit()
                     sys.exit()
+                    
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.back_btn.is_hovered:
                         self.back()
+                        
                     elif self.first.is_hovered:
                         self.first.handle_event(event)
+                        
                         first_mis = Mission(self.window_width, self.window_height, self.previous_screen, self,
                                             dif="Щадящий", n=1, bi_path="table.png")
                         first_mis.open()
+                        
                     elif self.second.is_hovered:
                         self.second.handle_event(event)
+                        
                         second_mis = Mission(self.window_width, self.window_height, self.previous_screen, self,
                                              dif="Ветеран", n=1, bi_path="table.png")
                         second_mis.open()
+                        
                     elif self.third.is_hovered:
                         self.third.handle_event(event)
+                        
                         third_mis = Mission(self.window_width, self.window_height, self.previous_screen, self,
                                             dif="Ангел Смерти", n=1, bi_path="table.png")
                         third_mis.open()
@@ -152,6 +169,7 @@ class Missions:
                 self.first.handle_event(event)
                 self.second.handle_event(event)
                 self.third.handle_event(event)
+                
             self.grom_clock.tick(90)
 
             if self.get_fps_result() == "True":
@@ -168,6 +186,7 @@ class Missions:
             self.redrawing()
             pygame.display.flip()
 
+    # функция для отрисовки всего
     def redrawing(self):
         self.window.blit(self.background_image, (0, 0))
         self.first.draw(self.window)
@@ -201,10 +220,12 @@ class Missions:
 
         if self.get_fps_result() == "True":
             self.window.blit(self.grom_text_show_fps, (0, 0))
-
+            
+    # функция возврата на пред. окно
     def back(self):  # возврат
         pygame.display.set_caption("Grom: Essense of Chaos")
         self.back_object.main_menu()
 
+    # функция для определения фпс
     def get_fps_result(self):
         return json.load(open('resources/settings/settings.json'))['fps_status']
