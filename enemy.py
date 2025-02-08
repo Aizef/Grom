@@ -23,6 +23,7 @@ class Enemy:
             
             while counter != 15:
                 temp = random.choice(os.listdir('resources/character'))
+                
                 if (temp not in self.enemy_ch and Character(temp).frac[0] == "m" or Character(temp).frac[0] == "s" and
                     Character(temp).name.lower() != "бастион" and Character(
                             temp).name.lower() != "штурмовик" and Character(
@@ -45,8 +46,10 @@ class Enemy:
             
             while counter != 15:
                 temp = random.choice(os.listdir('resources/character'))
+                
                 if temp not in self.enemy_ch and Character(
                         temp).name.lower() not in "бастионштурмовикснайпер" and temp != 'question':
+                            
                     self.enemy_ch.append(temp)
                     self.enemy_deck.append(Card(Character(temp),
                                                 Button(int(self.window_width / 3.52 + len(
@@ -63,6 +66,7 @@ class Enemy:
             
             while counter != 4:
                 temp = random.choice(os.listdir('resources/character'))
+                
                 if temp not in self.enemy_ch and Character(temp).frac[0] != "m" and Character(temp).frac[
                     0] != "s" and temp != 'question' and Character(temp).name.lower() not in "бастионштурмовикснайпер":
                     self.enemy_ch.append(temp)
@@ -81,6 +85,7 @@ class Enemy:
             
             while counter != 11:
                 temp = random.choice(os.listdir('resources/character'))
+                
                 if temp not in self.enemy_ch and Character(temp).frac[0] != "e" and Character(temp).name.lower() not in "бастионштурмовикснайпер":
                     self.enemy_ch.append(temp)
                     self.enemy_deck.append(Card(Character(temp),
