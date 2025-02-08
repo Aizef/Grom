@@ -34,6 +34,7 @@ class Statistic_window:
                                          30 * self.window_width * self.window_height // user32.GetSystemMetrics(
                                              0) // user32.GetSystemMetrics(1)
                                          )
+            
             self.background_image = pygame.image.load("resources/pictures/mis_compl.png").convert_alpha()
             self.background_image = pygame.transform.scale(self.background_image,
                                                            (self.window_width, self.window_height))
@@ -41,6 +42,7 @@ class Statistic_window:
             self.background_image = pygame.image.load("resources/pictures/mis_f.png").convert_alpha()
             self.background_image = pygame.transform.scale(self.background_image,
                                                            (self.window_width, self.window_height))
+            
             self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",
                                          30 * self.window_width * self.window_height // user32.GetSystemMetrics(
                                              0) // user32.GetSystemMetrics(1)
