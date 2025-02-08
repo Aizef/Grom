@@ -1,3 +1,4 @@
+# импорт библиотек
 import getpass
 import json
 import sys
@@ -15,15 +16,19 @@ import ctypes
 from list_modes import List_modes
 
 
+# создание класса и инициализация
+
 class Settings:
     def __init__(self, window_width, window_height, screen, last_object):
+        #  получение настроек
         self.setting = json.load(open('resources/settings/settings.json'))
-        self.clock = pygame.time.Clock()
         self.verification = False
         self.temp_volume = int(self.get('volume_level'))
         self.temp_fullscren = self.get('fullscreen_status')
         self.temp_fps = self.get('fps_status')
-
+        #  подсчет фпс
+        self.clock = pygame.time.Clock()
+        #  записывание размеров экрана
         self.window_width = window_width
         self.window_height = window_height
 
@@ -38,19 +43,23 @@ class Settings:
         self.temp_screen = self.get('screen_status')
         self.screen_size = (self.window_width,
                             self.window_height)
+        # отображение фпс
+        #  рисуем окно настроек
 
         if self.setting['fullscreen_status'] == 'True':
             self.screen = pygame.display.set_mode((0, 0), FULLSCREEN)
             self.window = pygame.display.set_mode(self.screen_size, FULLSCREEN)
         else:
             self.window = pygame.display.set_mode(self.screen_size, FULLSCREEN)
+        # отображение фона и заголовка
         self.background_image = pygame.image.load("resources/pictures/set_final.png")
         self.background_image = pygame.transform.scale(self.background_image, self.screen_size)
         self.window.blit(self.background_image, (0, 0))
-
         pygame.display.set_caption("Настройки")
+        # запоминание цвета
         self.button_color = (255, 205, 234)
         self.button_text_color = (0, 0, 0)
+        # установка шрифта
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
         self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf", 20 *
@@ -73,6 +82,7 @@ class Settings:
         self.redrawing(True)
         pygame.display.flip()
 
+    # функция для открытия окна
     def open(self):
         running = True
         while running:
@@ -82,14 +92,14 @@ class Settings:
                     pygame.quit()
                     sys.exit()
                 if event.type == pygame.MOUSEBUTTONDOWN:
-                    if self.screen_plus.is_hovered:
+                    if self.screen_plus.is_hovered:  # проверка нажатия кнопки увеличения экрана
                         self.temp_screen = int(self.temp_screen) + 1
                         if int(self.temp_screen) == len(self.screen_list):
                             self.temp_screen = 0
                         self.screen_status.text = str(self.screen_list[self.temp_screen])
                         pygame.display.flip()
 
-                    elif self.screen_minus.is_hovered:
+                    elif self.screen_minus.is_hovered:  # проверка нажатия кнопки уменьшения экрана
                         if int(self.temp_screen) > 0:
                             self.temp_screen = int(self.temp_screen) - 1
                         else:
@@ -98,11 +108,11 @@ class Settings:
                         self.screen_status.text = str(self.screen_list[self.temp_screen])
                         pygame.display.flip()
 
-                    elif self.verify.is_hovered:
+                    elif self.verify.is_hovered:  # проверка нажатия кнопки применения настроек
                         self.insert_settings()
                         running = False
 
-                    elif self.volume_plus.is_hovered:
+                    elif self.volume_plus.is_hovered:  # проверка нажатия кнопки увеличения звука
                         if float(self.temp_volume) <= 90:
                             self.temp_volume = round(float(self.temp_volume) + 10, 1)
                             self.volume_status.text = str(int(self.temp_volume))
@@ -111,7 +121,7 @@ class Settings:
                             self.volume_minus.draw(self.window, temp=10)
                             pygame.display.flip()
 
-                    elif self.volume_minus.is_hovered:
+                    elif self.volume_minus.is_hovered:  # проверка нажатия кнопки уменьшения звука
                         if 0 < float(self.temp_volume):
                             self.temp_volume = round(float(self.temp_volume) - 10, 1)
                             self.volume_status.text = str(int(self.temp_volume))
@@ -120,19 +130,19 @@ class Settings:
                             self.volume_minus.draw(self.window, temp=10)
                             pygame.display.flip()
 
-                    elif self.fullscreen_no.is_hovered:
+                    elif self.fullscreen_no.is_hovered:  # проверка нажатия кнопки изменения статуса окна
                         self.temp_fullscren = 'False'
 
-                    elif self.fullscreen_yes.is_hovered:
+                    elif self.fullscreen_yes.is_hovered:  # проверка нажатия кнопки изменения статуса окна
                         self.temp_fullscren = 'True'
 
-                    elif self.fps_yes.is_hovered:
+                    elif self.fps_yes.is_hovered:  # проверка нажатия кнопки изменения фпс
                         self.temp_fps = 'True'
 
-                    elif self.fps_no.is_hovered:
+                    elif self.fps_no.is_hovered:  # проверка нажатия кнопки изменения фпс
                         self.temp_fps = 'False'
 
-                    elif self.default.is_hovered:
+                    elif self.default.is_hovered:  # проверка нажатия кнопки сброса настроек
                         user32 = ctypes.windll.user32
                         user32.SetProcessDPIAware()
                         for i in range(len(self.screen_list)):
@@ -145,7 +155,7 @@ class Settings:
                                      self.back_object)
                         s.open()
 
-                    elif self.back_btn.is_hovered:
+                    elif self.back_btn.is_hovered:  # кнопка для возвращения на пред. окно
                         self.back()
 
                 self.verify.handle_event(event)
@@ -184,6 +194,8 @@ class Settings:
             self.clock.tick(90)
             self.redrawing()
             pygame.display.flip()
+
+    # функция для отрисовки всего
 
     def redrawing(self, full=False):
         self.window.blit(self.background_image, (0, 0))
@@ -300,6 +312,8 @@ class Settings:
         self.previous_screen.blit(self.window, (0, 0))
         self.back_btn.draw(self.window)
 
+    # функция для применения настроек
+
     def insert_settings(self):
         user32 = ctypes.windll.user32
         user32.SetProcessDPIAware()
@@ -346,9 +360,13 @@ class Settings:
         pygame.display.flip()
         self.open()
 
+    # функция для возвращения на пред экран
+
     def back(self):  # возврат
         pygame.display.set_caption("Grom")
         self.back_object.reopen(self.screen_size[0], self.screen_size[1])
+
+    # функция для получения элемента настроек
 
     def get(self, name):
         return self.setting[name]
