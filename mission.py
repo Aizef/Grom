@@ -91,12 +91,15 @@ class Mission:
         self.stat_name = self.font.render("", True, self.button_color)
         self.stat_damage = self.font.render("", True, self.button_color)
         self.stat_frac = self.font.render("", True, self.button_color)
+        
         self.player_health_text = self.font.render("Ваше здоровье: 0", True, self.button_color)
         self.bot_health_text = self.font.render("Здоровье противника: 0", True, self.button_color)
         self.bot_damage_text = self.font.render("Ваш урон: 0", True, self.button_color)
         self.player_damage_text = self.font.render("Урон противника: 0", True, self.button_color)
         self.player_status = self.font.render("Обменяйте или выложите карту", True, self.button_color)
+        
         self.null_everything()
+        
         self.previous_screen = screen
         
         #  рендер окна и обновление дисплея
@@ -118,6 +121,7 @@ class Mission:
         # заполнение колоды
         while True:
             temp = choice(os.listdir('resources/character'))
+            
             if temp not in self.ch and temp != 'question':
                 self.ch.append(temp)
                 self.deck.append(Card(Character(temp),
@@ -151,6 +155,7 @@ class Mission:
         self.pas = False
         self.player_hearts = 2
         self.bots_hearts = 2
+        
         self.stat = {'bots_putted_card': 0, 'players_putted_car': 0, 'bots_summary_damage': 0,
                      'players_summary_damage': 0, 'bots_summary_health': 0, 'players_summary_health': 0}
         
@@ -169,6 +174,7 @@ class Mission:
         running = True
         while running:
             pos = pygame.mouse.get_pos()
+            
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
@@ -178,6 +184,7 @@ class Mission:
                 if event.type == pygame.MOUSEBUTTONDOWN:
                     if self.back_button.is_hovered:
                         self.back()
+                        
                     for i in range(len(self.deck)):
                         if i < len(self.deck):
                             if self.deck[i][1].is_hovered and self.change_counter != 0:  # фаза замены
@@ -203,6 +210,7 @@ class Mission:
                         self.stat_image = Button(int(self.window_width / 15), int(self.window_height / 2.3),
                                                  int(self.window_width / 15.52), int(self.window_height / 6.4), '',
                                                  f'resources/character/{i[0].path}/image.png')
+                        
                         self.stat_damage = self.font.render(f"Урон: {i[0].damage}", True, self.button_color)
                         self.stat_frac = self.font.render(f"Фракция: {i[0].frac}", True, self.button_color)
                         
@@ -210,11 +218,14 @@ class Mission:
                     self.stat_name = self.font.render(f"Имя: {self.next_bot_card[0].name}", True, self.button_color)
                     self.stat_health = self.font.render(f"Здоровье: {self.next_bot_card[0].health}", True,
                                                         self.button_color)
+                    
                     self.stat_image = Button(int(self.window_width / 15), int(self.window_height / 2.3),
                                              int(self.window_width / 15.52), int(self.window_height / 6.4), '',
                                              f'resources/character/{self.next_bot_card[0].path}/image.png')
+                    
                     self.stat_damage = self.font.render(f"Урон: {self.next_bot_card[0].damage}", True,
                                                         self.button_color)
+                    
                     self.stat_frac = self.font.render(f"Фракция: {self.next_bot_card[0].frac}", True, self.button_color)
 
             self.grom_clock.tick(90)
@@ -272,16 +283,19 @@ class Mission:
             if self.bots_deck[self.bots_card_num][0].frac[0] == "s":  # первый ряд
                 card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[0]
                 card_y = int(self.window_height / 3.73)
+                
                 self.bot_rows[0] += 1
 
             elif self.bots_deck[self.bots_card_num][0].frac[0] == "m":  # второй ряд
                 card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[1]
                 card_y = int(self.window_height / 7)
+                
                 self.bot_rows[1] += 1
 
             else:  # третий ряд
                 card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[2]
                 card_y = int(0)
+                
                 self.bot_rows[2] += 1
 
             # обновление здоровья и урона бота
@@ -352,6 +366,7 @@ class Mission:
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                 text = font.render('Ваш урон уменьшен до 0', True, self.button_color)
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                
                 self.draw_board()
                 time.sleep(0.5)
 
@@ -364,6 +379,7 @@ class Mission:
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                 text = font.render('Здоровье противника увеличено на 150', True, self.button_color)
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                
                 self.draw_board()
                 time.sleep(0.5)
 
@@ -377,6 +393,7 @@ class Mission:
                 text = font.render('Противник собрал комбинацию: "Искалеченная плоть искалеченная душа"', True,
                                    self.button_color)
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                
                 self.draw_board()
                 time.sleep(0.5)
 
@@ -391,6 +408,7 @@ class Mission:
                 text = font.render('Противник собрал комбинацию: "Одна голова хорошо а две — мутант!"', True,
                                    self.button_color)
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                    
                 self.draw_board()
                 time.sleep(0.5)
 
@@ -406,6 +424,7 @@ class Mission:
                 text = font.render('Противник собрал комбинацию: "Человек хуже мутанта когда он мутант."', True,
                                    self.button_color)
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                    
                 self.draw_board()
                 time.sleep(0.5)
 
@@ -419,6 +438,7 @@ class Mission:
                 text = font.render('Противник собрал комбинацию: "Плох тот ученый который не инженер"', True,
                                    self.button_color)
                 self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                
                 self.draw_board()
                 time.sleep(0.5)
 
@@ -569,16 +589,19 @@ class Mission:
                 if self.deck[i][0].frac[0] == "s":  # первый ряд
                     card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.player_rows[0]
                     card_y = int(self.window_height / 2.4 + 10)
+                    
                     self.player_rows[0] += 1
                     
                 elif self.deck[i][0].frac[0] == "m":  # второй ряд
                     card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.player_rows[1]
                     card_y = int(self.window_height / 1.8 - 1)
+                    
                     self.player_rows[1] += 1
 
                 else:  # третий ряд
                     card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.player_rows[2]
                     card_y = int(self.window_height / 1.48 + 30)
+                    
                     self.player_rows[2] += 1
 
                 # обновления здоровья и урона игрока
@@ -620,6 +643,7 @@ class Mission:
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                     text = font.render('Урон противника уменьшен до 0', True, self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                    
                     self.draw_board()
                     time.sleep(0.5)
 
@@ -632,6 +656,7 @@ class Mission:
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
                     text = font.render('Ваше здоровье увеличено на 200', True, self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.3)))
+                    
                     self.draw_board()
                     time.sleep(0.5)
 
@@ -645,6 +670,7 @@ class Mission:
                     text = font.render('Вы собрали комбинацию: "Искалеченная плоть, искалеченная душа"', True,
                                        self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                    
                     self.draw_board()
                     time.sleep(0.5)
 
@@ -658,6 +684,7 @@ class Mission:
                     text = font.render('Вы собрали комбинацию: "Одна голова хорошо, а две — мутант!"', True,
                                        self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                    
                     self.draw_board()
                     time.sleep(0.5)
 
@@ -672,6 +699,7 @@ class Mission:
                     text = font.render('Вы собрали комбинацию: "Человек хуже мутанта, когда он мутант."', True,
                                        self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                            
                     self.draw_board()
                     time.sleep(0.5)
 
@@ -685,6 +713,7 @@ class Mission:
                     text = font.render('Вы собрали комбинацию: "Плох тот ученый который не инженер"', True,
                                        self.button_color)
                     self.window.blit(text, (int(self.window_width / 3), int(self.window_height / 2.5)))
+                    
                     self.draw_board()
                     time.sleep(0.5)
 
@@ -704,21 +733,26 @@ class Mission:
         if spy[0].frac[0] == "s":  # первый ряд
             card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[0]
             card_y = int(self.window_height / 3.73)
+            
             self.bot_rows[0] += 1
 
         elif spy[0].frac[0] == "m":  # второй ряд
             card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[1]
             card_y = int(self.window_height / 7)
+            
             self.bot_rows[1] += 1
 
         else:  # третий ряд
             card_x = int(self.window_width / 2.73) + int(self.window_width / 15.52) * self.bot_rows[2]
             card_y = int(0)
+            
             self.bot_rows[2] += 1
+            
         temp = spy[0].path
 
         # запоминаем выложенную карту-шпиона в колоду игрока
         i = self.deck.index(spy)
+        
         self.deck[i] = (Card(Character(temp, True),
                              Button(int(self.window_width / 4.22 + i * self.window_width / 15.52),
                                     int(self.window_height / 1.19), int(self.window_width / 15.52),
@@ -827,6 +861,7 @@ class Mission:
             self.player_hearts -= 1
             pygame.display.flip()
             time.sleep(0.7)
+            
         else:  # выиграл игрок
             result = font.render('Противник потерял жизнь', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
@@ -903,10 +938,13 @@ class Mission:
         if len(self.new_deck) == 0 and self.bots_hearts != 0:
             result = font.render('Вы проиграли из-за недостатка карт', True, self.button_color)
             self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
+            
             pygame.display.flip()
             time.sleep(1)
+            
             self.player_hearts = 0
             self.comp = False
+            
             self.open()
 
     # функция для определения fps
@@ -949,6 +987,7 @@ class Mission:
     # функция для проверки фракций у карт
     def check_frac(self, arg):
         result = {"m": 0, "s": 0, "e": 0}
+        
         for i in arg:
             if i.frac[0].lower() == "m":
                 result["m"] += 1
@@ -956,6 +995,7 @@ class Mission:
                 result["s"] += 1
             elif i.frac[0].lower() == "e":
                 result["e"] += 1
+                
         return result
 
     # функция для отрисовки рамки(например, при активации какой-либо комбинации)
@@ -964,6 +1004,7 @@ class Mission:
                          [int(self.window_width / 3) - 10, int(self.window_height / 2.5) - self.shrift_coefficient,
                           self.window_width // 2.2, 150],
                          width=10)
+        
         pygame.display.flip()
 
     # функция для проверки наличия карты-шпиона в колоде
@@ -971,4 +1012,5 @@ class Mission:
         result = []
         if arg[0].name.lower() in "бастионснайперштурмовик":
             result = arg
+            
         return result
