@@ -1,11 +1,15 @@
+# импорт библиотек
 import platform
 
+# если ос-Windows
 if platform.system() == "Windows":
     import ctypes
 
+    # функция для определния всех разрешений экрана
     def List_modes():
         modes = set()
 
+        # класс на основе ctypes.Structure(в нем все уже написано)
         class DEVMODE(ctypes.Structure):
             _fields_ = [
                 ("dmDeviceName", ctypes.c_wchar * 32),
@@ -47,11 +51,15 @@ if platform.system() == "Windows":
         i = 0
         devmode = DEVMODE()
         devmode.dmSize = ctypes.sizeof(DEVMODE)
+
+        # Добавляем кортеж (ширина, высота), пока они не закончились
         while ctypes.windll.user32.EnumDisplaySettingsW(None, i, ctypes.byref(devmode)):
-            # Добавляем кортеж (ширина, высота)
             modes.add((devmode.dmPelsWidth, devmode.dmPelsHeight))
             i += 1
+            
         out = []
+        
+        # проходимся по всем разрешениям
         for i in sorted(modes):
             out.append(f'{i[0]} x {i[1]}')
         return out
