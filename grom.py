@@ -86,6 +86,7 @@ class Grom:
 
         self.background_image = pygame.image.load("resources/pictures/missions_pic.png")
         self.background_image = pygame.transform.scale(self.background_image, (self.width, self.height))
+        
         self.go_to_mission_btn = Button(int(self.width / 4), int(self.height / 3.86), int(self.width / 2), self.width // 12, 'Перейти к миссиям',
                                         'resources/pictures/after1.png',
                                         'resources/pictures/after.png',
