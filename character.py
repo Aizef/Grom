@@ -17,6 +17,7 @@ class Character:
         
         self.sound = f'resources/character/{path}/sound.mp3'
         self.used_image = f'resources/character/{path}/used.png'
+        
         self.used = used
         self.path = path
 
