@@ -13,7 +13,6 @@ if __name__ == "__main__":
     user32 = ctypes.windll.user32
     user32.SetProcessDPIAware()
     #  установка шрифта
-    
     if s['last_user'] == getpass.getuser():  #  проврка пользователя
         print(25 * int(screen_list[s['screen_status']].split('x')[0][:-1])
               * int(screen_list[s['screen_status']].split('x')[1]) // user32.GetSystemMetrics(

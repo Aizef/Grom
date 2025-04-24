@@ -274,6 +274,13 @@ class Mission:
 
     # функция для хода бота
     def bot_turn(self):
+        # если у бота нет карт
+        if self.bots_card_num == len(self.bots_deck):
+            if len(self.putted_card) != len(self.deck):
+                self.turn = True
+            else:
+                self.over()
+
         try:
             # запоминание пути к карте и обновление выложенных ботом карт
             temp = self.bots_deck[self.bots_card_num][0].path
@@ -947,6 +954,17 @@ class Mission:
             
             self.open()
 
+        if len(self.bots_putted_card) == 10:
+            result = font.render('Противник проиград из-за недостатка карт', True, self.button_color)
+            self.window.blit(result, (int(self.window_width / 3.1), int(self.window_height / 2.8)))
+
+            pygame.display.flip()
+            time.sleep(1)
+
+            self.bots_hearts = 0
+            self.comp = False
+
+            self.open()
     # функция для определения fps
     def get_fps_result(self):
         return self.settings['fps_status']

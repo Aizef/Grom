@@ -31,7 +31,7 @@ class Statistic_window:
             
         if comp:
             self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",
-                                         30 * self.window_width * self.window_height // user32.GetSystemMetrics(
+                                         25 * self.window_width * self.window_height // user32.GetSystemMetrics(
                                              0) // user32.GetSystemMetrics(1)
                                          )
             
@@ -44,7 +44,7 @@ class Statistic_window:
                                                            (self.window_width, self.window_height))
             
             self.font = pygame.font.Font("resources/settings/font_settings/shrift.otf",
-                                         30 * self.window_width * self.window_height // user32.GetSystemMetrics(
+                                         25 * self.window_width * self.window_height // user32.GetSystemMetrics(
                                              0) // user32.GetSystemMetrics(1)
                                          )
             
@@ -68,8 +68,8 @@ class Statistic_window:
         
         self.text = self.font.render("Подсчет результатов:", True, self.button_color)
         
-        self.ret_btn = Button(int(self.window_width - self.window_width // 10 - 120), 0,
-                              int(self.window_width // 10 + 110), 100, 'Вернуться к миссиям',
+        self.ret_btn = Button(int(self.window_width - self.window_width // 10 - 220), 0,
+                              int(self.window_width // 10 + 210), 100, 'Вернуться к миссиям',
                               'resources/pictures/after1.png',
                               'resources/pictures/after.png',
                               'resources/sound/start.mp3')
